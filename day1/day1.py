@@ -27,6 +27,8 @@ For example, if your instructions are R8, R4, R4, R8, the first location you vis
 How many blocks away is the first location you visit twice?
 """
 from __future__ import unicode_literals, division
+from advent_of_code_2016 import utils
+
 
 TEXT_INPUT = 'input.txt'
 
