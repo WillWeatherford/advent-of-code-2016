@@ -28,14 +28,37 @@ UUUUD
 So, in this example, the bathroom code is 1985.
 
 Your puzzle input is the instructions from the document you found at the front desk. What is the bathroom code?
+
+--- Part Two ---
+
+You finally arrive at the bathroom (it's a several minute walk from the lobby so visitors can behold the many fancy conference rooms and water coolers on this floor) and go to punch in the code. Much to your bladder's dismay, the keypad is not at all like you imagined it. Instead, you are confronted with the result of hundreds of man-hours of bathroom-keypad-design meetings:
+
+    1
+  2 3 4
+5 6 7 8 9
+  A B C
+    D
+
+You still start at "5" and stop when you're at an edge, but given the same instructions as above, the outcome is very different:
+
+    You start at "5" and don't move at all (up and left are both edges), ending at 5.
+    Continuing from "5", you move right twice and down three times (through "6", "7", "B", "D", "D"), ending at D.
+    Then, from "D", you move five more times (through "D", "B", "C", "C", "B"), ending at B.
+    Finally, after five more moves, you end at 3.
+
+So, given the actual keypad layout, the code would be 5DB3.
+
+Using the same instructions in your puzzle input, what is the correct bathroom code?
 """
 
-INPUT_FILE = 'day2_1_input.txt'
+INPUT_FILE = 'day2_input.txt'
 
 KEYPAD = [
-    ['1', '2', '3'],
-    ['4', '5', '6'],
-    ['7', '8', '9'],
+    [ '',  '', '1',  '', ','],
+    [ '', '2', '3', '4',  ''],
+    ['5', '6', '7', '8', '9'],
+    [ '', 'A', 'B', 'C',  ''],
+    [ '',  '', 'D',  '', ','],
 ]
 
 
@@ -57,7 +80,7 @@ def parse_input():
 def get_key_presses(instructions):
     """Calculate the buttons to be pressed from the instructions."""
     presses = []
-    y, x = 1, 1  # starting at 5
+    y, x = 2, 0  # still starting at 5
     for line in instructions:
         for move in line:
             y, x = process_move(y, x, move)
@@ -67,11 +90,13 @@ def get_key_presses(instructions):
 
 def process_move(y, x, move):
     """Process a move, making sure not to go off of the keypad."""
-    temp_yx = MOVES[move](y, x)
-    for coord in temp_yx:
-        if coord < 0 or coord > 2:
+    temp_y, temp_x = MOVES[move](y, x)
+    for coord in (temp_y, temp_x):
+        if coord < 0 or coord > 4:
             return y, x
-    return temp_yx
+    if not KEYPAD[temp_y][temp_x]:
+        return y, x
+    return temp_y, temp_x
 
 
 if __name__ == '__main__':

@@ -30,7 +30,7 @@ So, in this example, the bathroom code is 1985.
 Your puzzle input is the instructions from the document you found at the front desk. What is the bathroom code?
 """
 
-INPUT_FILE = 'day2_1_input.txt'
+INPUT_FILE = 'day2_input.txt'
 
 KEYPAD = [
     ['1', '2', '3'],
