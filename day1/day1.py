@@ -28,7 +28,7 @@ How many blocks away is the first location you visit twice?
 """
 from __future__ import unicode_literals, division
 
-TEXT_INPUT = 'day1_input.txt'
+TEXT_INPUT = 'input.txt'
 
 
 # Transformation table to give appropriate new x, y values depending on facing.
