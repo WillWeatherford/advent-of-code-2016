@@ -42,6 +42,15 @@ def parse_input(lines):
             yield instruction[0], int(instruction[1:])
 
 
+def distance_to_final(instructions):
+    """Calculate the distance in blocks to the final position."""
+    x, y, facing = 0, 0, 'N'
+    for turn, distance in instructions:
+        facing = TURNS[turn][facing]
+        x, y = MOVES[facing](x, y, distance)
+    return abs(x) + abs(y)
+
+
 def distance_to_first_revisted(instructions):
     """Calculate the distance in blocks to the first revisted position."""
     visited = set()
@@ -56,13 +65,15 @@ def distance_to_first_revisted(instructions):
     return abs(x) + abs(y)
 
 
-def step1(lines):
-    """Process solution for Day 1 Step 1."""
-    pass
+def part1(lines):
+    """Process solution for Day 1 part 1."""
+    instructions = parse_input(lines)
+    result = distance_to_final(instructions)
+    print('The final location is {} blocks away.'.format(result))
 
 
-def step2(lines):
-    """Process solution for Day 1 Step 2."""
+def part2(lines):
+    """Process solution for Day 1 part 2."""
     instructions = parse_input(lines)
     result = distance_to_first_revisted(instructions)
     print('The first revisted location is {} blocks away.'.format(result))
