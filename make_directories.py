@@ -24,6 +24,8 @@ def main(day_range):
             template_filepath = os.path.join(HERE, 'templates', template_filename)
             call(['cp', template_filepath, dest_filepath])
             call(['git', 'add', dest_filepath])
+        call(['touch', os.path.join(path, '__init__.py')])
+        call(['git', 'add', os.path.join(path, '__init__.py')])
         call(['git', 'commit', '-m', 'Committing {} files.'.format(day_name)])
         call(['git', 'checkout', RETURN_TO])
 
