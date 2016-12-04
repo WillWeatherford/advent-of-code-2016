@@ -51,12 +51,11 @@ def input_lines(filename):
 
 def sum_real_sectors(rooms):
     """Return total sum of all real room sectors."""
-    return sum(is_real_room(room) for room in rooms)
+    return sum(is_real_room(parse_room(room)) for room in rooms)
 
 
-def is_real_room(room):
+def is_real_room(parts):
     """Return int of sector if room is real; else return 0."""
-    parts = parse_room(room)
     if order_name(parts['name']) == parts['checksum']:
         return int(parts['sector'])
     return 0
@@ -80,6 +79,16 @@ def order_name(name):
     return ''.join(map(itemgetter(0), by_count))[:5]
 
 
+def decode_real_rooms(rooms):
+    """Print decoded real rooms."""
+    for room in rooms:
+        parts = parse_room(room)
+        if is_real_room(parts):
+            decoded = rotate_name(parts['name'], parts['sector'])
+            if 'object' in decoded:
+                return parts['sector']
+
+
 def rotate_name(name, sector):
     """Rotate name forward in alphabet number of spaces equal to its sector."""
     return ''.join([rotate_letter(letter, int(sector)) for letter in name])
@@ -98,5 +107,5 @@ if __name__ == '__main__':
     result1 = sum_real_sectors(rooms)
     print('Sum of all sector IDs is {}'.format(result1))
     rooms = input_lines('input.txt')
-    # result1 = sum_real_sectors(rooms)
-    # print('Sum of all sector IDs is {}'.format(result1))
+    result2 = decode_real_rooms(rooms)
+    print('The northpole objects are in sector {}'.format(result2))
