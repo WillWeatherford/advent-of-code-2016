@@ -49,8 +49,9 @@ def input_lines(filename):
             yield line.strip()
 
 
-def sum_real_sectors(rooms):
+def sum_real_sectors():
     """Return total sum of all real room sectors."""
+    rooms = input_lines('input.txt')
     return sum(is_real_room(*parse_room(room)) for room in rooms)
 
 
@@ -79,14 +80,15 @@ def order_name(name):
     return ''.join(map(itemgetter(0), by_count))[:5]
 
 
-def find_northpole_object(rooms):
+def find_northpole_object():
     """Return the sector ID of room containing northpole object."""
-    for name, sector in decoded_real_rooms(rooms):
+    rooms = input_lines('input.txt')
+    for name, sector in decode_real_rooms(rooms):
         if 'northpole object' in name:
             return sector
 
 
-def decoded_real_rooms(rooms):
+def decode_real_rooms(rooms):
     """Return generator of decoded names of real rooms."""
     for room in rooms:
         name, sector, checksum = parse_room(room)
@@ -108,10 +110,8 @@ def rotate_letter(letter, mod):
 
 
 if __name__ == '__main__':
-    rooms = input_lines('input.txt')
-    result1 = sum_real_sectors(rooms)
+    result1 = sum_real_sectors()
     print('Sum of all sector IDs is {}'.format(result1))
 
-    rooms = input_lines('input.txt')
-    result2 = find_northpole_object(rooms)
+    result2 = find_northpole_object()
     print('The northpole objects are in sector {}'.format(result2))
