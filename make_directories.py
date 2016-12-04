@@ -50,7 +50,7 @@ def main(names):
         call(['git', 'add', txt_filepath])
         with open(solution_filepath, 'w') as solution_file:
             solution_file.writelines(SOLUTION_TEMPLATE)
-         call(['git', 'add', solution_filepath])
+        call(['git', 'add', solution_filepath])
         call(['git', 'commit', '-m', 'Committing {}.'.format(txt_filename)])
         call(['git', 'checkout', RETURN_TO])
 
