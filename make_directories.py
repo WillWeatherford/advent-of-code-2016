@@ -6,7 +6,7 @@ import os
 
 
 HERE = os.path.abspath(os.path.dirname(__file__))
-RETURN_TO = 'automate-setup'
+RETURN_TO = 'master'
 
 
 def main(day_range):
@@ -29,4 +29,4 @@ def main(day_range):
 
 
 if __name__ == '__main__':
-    main(range(5, 7))
+    main(range(5, 26))
