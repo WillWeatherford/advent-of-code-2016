@@ -57,7 +57,11 @@ def calc_blocks_away(instructions):
     return abs(x) + abs(y)
 
 
-if __name__ == '__main__':
-    instructions = parse_input(INPUT)
-    result = calc_blocks_away(instructions)
-print('The Easter Bunny is {} blocks away.'.format(result))
+def step1(lines):
+    """Process solution for Day 1 Step 1."""
+    pass
+
+
+def step2(lines):
+    """Process solution for Day 1 Step 2."""
+    pass
