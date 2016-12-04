@@ -9,10 +9,10 @@ import os
 
 DAYNAME_MATCH = r'day\d{1,2}'
 
-SOLUTION_TEMPLATE = 'solution_{}.py'
-TEST_TEMPLATE = 'test_{}.py'
-INPUT_TEMPLATE = 'input_{}.txt'
-TEMPLATES = (SOLUTION_TEMPLATE, TEST_TEMPLATE, INPUT_TEMPLATE)
+SOLUTION_NAME = 'solution_{}.py'
+TEST_NAME = 'test_{}.py'
+INPUT_NAME = 'input_{}.txt'
+FILENAMES = (SOLUTION_NAME, TEST_NAME, INPUT_NAME)
 
 
 def main(dayname, split=False):
@@ -20,7 +20,7 @@ def main(dayname, split=False):
     if not re.match(DAYNAME_MATCH, dayname):
         raise ValueError('Bad dayname.')
 
-    input_filename = INPUT_TEMPLATE.format(dayname)
+    input_filename = INPUT_NAME.format(dayname)
     input_filepath = os.path.join(dayname, input_filename)
     if split:
         lines = split_input_lines(input_filepath)
@@ -28,7 +28,7 @@ def main(dayname, split=False):
         lines = input_lines(input_filepath)
     lines1, lines2 = tee(lines, 2)
 
-    solution_filename = SOLUTION_TEMPLATE.format(dayname)
+    solution_filename = SOLUTION_NAME.format(dayname)
     day_module = import_module('.'.join((dayname, solution_filename)))
     day_module.part1(lines1)
     day_module.part2(lines2)

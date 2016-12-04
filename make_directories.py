@@ -1,7 +1,7 @@
 """Setup for Advent of Code by making git branches and directories."""
 from __future__ import unicode_literals, division
 from subprocess import call
-from run_aoc import TEMPLATES
+from run_aoc import FILENAMES
 import os
 
 
@@ -17,11 +17,11 @@ def main(day_range):
         path = os.path.join(HERE, day_name)
         os.mkdir(path)
 
-        for fmt in TEMPLATES:
+        for fmt in FILENAMES:
             dest_filename = fmt.format(day_name)
             dest_filepath = os.path.join(path, dest_filename)
             template_filename = fmt.format('template')
-            template_filepath = os.path.join(HERE, template_filename)
+            template_filepath = os.path.join(HERE, 'templates', template_filename)
             call(['cp', template_filepath, dest_filepath])
             call(['git', 'add', dest_filepath])
         call(['git', 'commit', '-m', 'Committing {} files.'.format(day_name)])
