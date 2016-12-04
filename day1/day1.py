@@ -27,8 +27,6 @@ For example, if your instructions are R8, R4, R4, R8, the first location you vis
 How many blocks away is the first location you visit twice?
 """
 from __future__ import unicode_literals, division
-from advent_of_code_2016 import utils
-
 
 TEXT_INPUT = 'input.txt'
 
@@ -49,12 +47,11 @@ TURNS = {
 }
 
 
-def parse_input(filename):
+def parse_lines(lines):
     """Parse a long input string of instructions."""
-    with open(filename, 'r') as text_file:
-        for line in text_file:
-            for instruction in line.strip().split(', '):
-                yield instruction[0], int(instruction[1:])
+    for line in lines:
+        for instruction in line.strip().split(', '):
+            yield instruction[0], int(instruction[1:])
 
 
 def calc_final_blocks_away(instructions):
@@ -80,11 +77,15 @@ def calc_first_revisited_blocks_away(instructions):
     return abs(x) + abs(y)
 
 
-if __name__ == '__main__':
-    instructions = parse_input(TEXT_INPUT)
+def part1(lines):
+    """Process Part 1 of the challenge."""
+    instructions = parse_lines(lines)
     result1 = calc_final_blocks_away(instructions)
     print('The final destination is {} blocks away.'.format(result1))
 
-    instructions = parse_input(TEXT_INPUT)
+
+def part2(lines):
+    """Process Part 1 of the challenge."""
+    instructions = parse_lines(lines)
     result2 = calc_first_revisited_blocks_away(instructions)
     print('The first revisted location is {} blocks away.'.format(result2))
