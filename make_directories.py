@@ -20,7 +20,8 @@ def main(names):
         os.mkdir(path)
         call(['touch', '.'.join((name, 'txt'))], cwd=path)
         call(['git', 'add', '.'.join((name, 'txt'))], cwd=path)
-        call(['git', 'checkout', 'master'])
+        call(['git', 'commit', '-m', 'Committing new {} file.'])
+        call(['git', 'checkout', 'automate-setup'])
 
 
 if __name__ == '__main__':
