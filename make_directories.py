@@ -29,4 +29,4 @@ def main(day_range):
 
 
 if __name__ == '__main__':
-    main(range(2))
+    main(range(5, 7))
