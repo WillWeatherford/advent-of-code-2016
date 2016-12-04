@@ -9,6 +9,7 @@ import os
 
 DAYNAME_MATCH = r'day\d{1,2}'
 
+SOLUTION_MODULE = 'solution_{}'
 SOLUTION_NAME = 'solution_{}.py'
 TEST_NAME = 'test_{}.py'
 INPUT_NAME = 'input_{}.txt'
@@ -28,8 +29,8 @@ def main(dayname, split=False):
         lines = input_lines(input_filepath)
     lines1, lines2 = tee(lines, 2)
 
-    solution_filename = SOLUTION_NAME.format(dayname)
-    day_module = import_module('.'.join((dayname, solution_filename)))
+    solution_modulename = SOLUTION_MODULE.format(dayname)
+    day_module = import_module('.'.join((dayname, solution_modulename)))
     day_module.part1(lines1)
     day_module.part2(lines2)
 

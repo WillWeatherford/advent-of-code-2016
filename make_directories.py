@@ -10,7 +10,7 @@ RETURN_TO = 'master'
 
 
 def main(day_range):
-    """."""
+    """Run program creating git branches, directories and files for AoC."""
     for day_num in day_range:
         day_name = 'day{}'.format(day_num)
         call(['git', 'checkout', '-b', day_name])
