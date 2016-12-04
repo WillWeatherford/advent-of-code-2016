@@ -26,7 +26,14 @@ import re
 ROOM_PAT = re.compile(r'(?P<name>[a-z\-]+)\-(?P<sector>\d+)\[(?P<checksum>[a-z]+)\]')
 
 
-def main(rooms):
+def input_lines(filename):
+    """Return generator of lines from input file."""
+    with open(filename, 'r') as input_file:
+        for line in input_file:
+            yield line.strip()
+
+
+def sum_real_sectors(rooms):
     """Return total sum of all real room sectors."""
     return sum(is_real_room(room) for room in rooms)
 
@@ -56,3 +63,8 @@ def order_name(name):
     by_count = sorted(by_alpha, key=itemgetter(1), reverse=True)
     return ''.join(map(itemgetter(0), by_count))[:5]
 
+
+if __name__ == '__main__':
+    rooms = input_lines('input.txt')
+    result1 = sum_real_sectors(rooms)
+    print('Sum of all sector IDs is {}'.format(result1))
