@@ -42,8 +42,10 @@ def parse_room(room):
 
 def order_name(name):
     """Return a string of letters representing the letters in a room name."""
-    name_count = Counter(name)
-    name_count.pop('-')
-    alpha = sorted(name_count.items())
-    count_then_alpha = sorted(alpha, key=itemgetter(1), reverse=True)
-    return ''.join(map(itemgetter(0), count_then_alpha))[:5]
+    counts = Counter(name)
+    counts.pop('-')
+    by_alpha = sorted(counts.items())
+    by_count = sorted(by_alpha, key=itemgetter(1), reverse=True)
+    return ''.join(map(itemgetter(0), by_count))[:5]
+
+
