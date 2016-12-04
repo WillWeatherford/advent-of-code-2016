@@ -16,8 +16,9 @@ INPUT_NAME = 'input_{}.txt'
 FILENAMES = (SOLUTION_NAME, TEST_NAME, INPUT_NAME)
 
 
-def main(dayname, split=False):
+def main(day_num, split=False):
     """Run the main function from a specified day."""
+    dayname = 'day{}'.format(day_num)
     if not re.match(DAYNAME_MATCH, dayname):
         raise ValueError('Bad dayname.')
 
