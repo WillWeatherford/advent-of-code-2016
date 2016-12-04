@@ -26,9 +26,17 @@ import re
 ROOM_PAT = re.compile(r'(?P<name>[a-z\-]+)\-(?P<sector>\d+)\[(?P<checksum>[a-z]+)\]')
 
 
+def main(rooms):
+    """Return total sum of all real room sectors."""
+    return sum(is_real_room(room) for room in rooms)
+
+
 def is_real_room(room):
-    """Return boolean of wether a room is real."""
+    """Return int of sector if room is real; else return 0."""
     parts = parse_room(room)
+    if order_name(parts['name']) == parts['checksum']:
+        return int(parts['sector'])
+    return 0
 
 
 def parse_room(room):
@@ -47,5 +55,4 @@ def order_name(name):
     by_alpha = sorted(counts.items())
     by_count = sorted(by_alpha, key=itemgetter(1), reverse=True)
     return ''.join(map(itemgetter(0), by_count))[:5]
-
 
