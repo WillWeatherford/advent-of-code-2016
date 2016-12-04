@@ -39,8 +39,7 @@ def main(names):
     """."""
     for name in names:
         path = os.path.join(HERE, name)
-        txt_filename = '.'.join((name, 'txt'))
-        txt_filepath = os.path.join(path, txt_filename)
+        txt_filepath = os.path.join(path, 'input.txt')
         solution_filename = '.'.join((name, 'py'))
         solution_filepath = os.path.join(path, solution_filename)
 
@@ -49,9 +48,9 @@ def main(names):
         call(['touch', txt_filepath])
         call(['git', 'add', txt_filepath])
         with open(solution_filepath, 'w') as solution_file:
-            solution_file.writelines(SOLUTION_TEMPLATE)
+            solution_file.write('\n'.join(SOLUTION_TEMPLATE))
         call(['git', 'add', solution_filepath])
-        call(['git', 'commit', '-m', 'Committing {}.'.format(txt_filename)])
+        call(['git', 'commit', '-m', 'Committing {} files.'.format(name)])
         call(['git', 'checkout', RETURN_TO])
 
 
