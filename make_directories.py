@@ -11,6 +11,7 @@ import os
 
 SOLUTION_TEMPLATE = [
     '"""',
+    '',
     '"""',
     'from __future__ import unicode_literals, division',
     '',
@@ -19,8 +20,8 @@ SOLUTION_TEMPLATE = [
     '   """Run solution for Part 1."""',
     '',
     '',
-    'def part1(lines):',
-    '   """Run solution for Part 1."""',
+    'def part2(lines):',
+    '   """Run solution for Part 2."""',
     '',
 ]
 
