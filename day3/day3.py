@@ -28,15 +28,6 @@ In your puzzle input, and instead reading by columns, how many of the listed tri
 
 """
 
-INPUT_FILE = 'day3_input.txt'
-
-
-def input_lines(filename):
-    """Return a generator of all lines in given file."""
-    with open(filename, 'r') as text_file:
-        for line in text_file:
-            yield line.strip()
-
 
 def is_valid_triangle(numbers):
     """Return boolean of whether a set of integers is a valid triangle."""
@@ -66,13 +57,15 @@ def count_valid_triangles_by_column(lines):
     return count
 
 
-if __name__ == '__main__':
-    lines = input_lines(INPUT_FILE)
-    result1 = count_valid_triangles_by_line(lines)
+def part1(lines):
+    """Process Day 3 Part 1."""
+    result = count_valid_triangles_by_line(lines)
     print('There are {} valid triangles, looking at each line as a triangle.'
-          ''.format(result1))
+          ''.format(result))
 
-    lines = input_lines(INPUT_FILE)
-    result2 = count_valid_triangles_by_column(lines)
+
+def part2(lines):
+    """Process Day 3 Part 2."""
+    result = count_valid_triangles_by_column(lines)
     print('There are {} valid triangles, looking at 3 numbers in each column '
-          'as a triangle.'.format(result2))
+          'as a triangle.'.format(result))
