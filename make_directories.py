@@ -1,60 +1,32 @@
 """Setup for Advent of Code by making git branches and directories."""
 from __future__ import unicode_literals, division
 from subprocess import call
+from run_aoc import TEMPLATES
 import os
 
-# Add dayname.py file
-#   Import unicode_literals, empty docstring
-#   def part1 and part2 functions
-# Add test_dayname.py file
-# Import unicode_literals, Docstring
-
-SOLUTION_TEMPLATE = [
-    '"""',
-    '',
-    '"""',
-    'from __future__ import unicode_literals, division',
-    '',
-    '',
-    'def part1(lines):',
-    '   """Run solution for Part 1."""',
-    '',
-    '',
-    'def part2(lines):',
-    '   """Run solution for Part 2."""',
-    '',
-]
 
 HERE = os.path.abspath(os.path.dirname(__file__))
-
 RETURN_TO = 'automate-setup'
 
 
-def test_names():
+def main(day_range):
     """."""
-    for n in range(2):
-        yield 'test{}'.format(n)
-
-
-def main(names):
-    """."""
-    for name in names:
-        path = os.path.join(HERE, name)
-        txt_filepath = os.path.join(path, 'input.txt')
-        solution_filename = '.'.join((name, 'py'))
-        solution_filepath = os.path.join(path, solution_filename)
-
-        call(['git', 'checkout', '-b', name])
+    for day_num in day_range:
+        day_name = 'day{}'.format(day_num)
+        call(['git', 'checkout', '-b', day_name])
+        path = os.path.join(HERE, day_name)
         os.mkdir(path)
-        call(['touch', txt_filepath])
-        call(['git', 'add', txt_filepath])
-        with open(solution_filepath, 'w') as solution_file:
-            solution_file.write('\n'.join(SOLUTION_TEMPLATE))
-        call(['git', 'add', solution_filepath])
-        call(['git', 'commit', '-m', 'Committing {} files.'.format(name)])
+
+        for fmt in TEMPLATES:
+            dest_filename = fmt.format(day_name)
+            dest_filepath = os.path.join(path, dest_filename)
+            template_filename = fmt.format('template')
+            template_filepath = os.path.join(HERE, template_filename)
+            call(['cp', template_filepath, dest_filepath])
+            call(['git', 'add', dest_filepath])
+        call(['git', 'commit', '-m', 'Committing {} files.'.format(day_name)])
         call(['git', 'checkout', RETURN_TO])
 
 
 if __name__ == '__main__':
-    names = test_names()
-    main(names)
+    main(range(2))
