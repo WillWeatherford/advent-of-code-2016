@@ -30,12 +30,16 @@ What is the sector ID of the room where North Pole objects are stored?
 """
 
 from __future__ import unicode_literals, division
+from string import ascii_lowercase
 from collections import Counter
 from operator import itemgetter
 import re
 
 
 ROOM_PAT = re.compile(r'(?P<name>[a-z\-]+)\-(?P<sector>\d+)\[(?P<checksum>[a-z]+)\]')
+
+ORD_MAP = dict(zip(ascii_lowercase, range(26)))
+CHR_MAP = dict(zip(range(26), ascii_lowercase))
 
 
 def input_lines(filename):
@@ -78,7 +82,15 @@ def order_name(name):
 
 def rotate_name(name, sector):
     """Rotate name forward in alphabet number of spaces equal to its sector."""
-    
+    return ''.join([rotate_letter(letter, int(sector)) for letter in name])
+
+
+def rotate_letter(letter, mod):
+    """Move a letter forward mod number of spaces in the alphabet."""
+    if letter == '-':
+        return ' '
+    moved = ORD_MAP[letter] + mod
+    return CHR_MAP[moved % 26]
 
 
 if __name__ == '__main__':
