@@ -1,5 +1,6 @@
 """Utilities for Advent of Code challenges."""
 from __future__ import unicode_literals, division
+from importlib import import_module
 from itertools import tee
 import sys
 import re
@@ -21,7 +22,7 @@ def main(dayname, split=False):
         lines = input_lines(input_filename)
     lines1, lines2 = tee(lines, 2)
 
-    day_module = __import__(dayname)
+    day_module = import_module('.'.join((dayname, dayname)))
     day_module.part1(lines1)
     day_module.part2(lines2)
 
