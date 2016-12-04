@@ -21,10 +21,10 @@ How many blocks away is Easter Bunny HQ?
 
 # Transformation table to give appropriate new x, y values depending on facing.
 MOVES = {
-    'N': lambda x, y: (x, y + 1),
-    'E': lambda x, y: (x + 1, y),
-    'S': lambda x, y: (x, y - 1),
-    'W': lambda x, y: (x - 1, y),
+    'N': lambda x, y, d: (x, y + d),
+    'E': lambda x, y, d: (x + d, y),
+    'S': lambda x, y, d: (x, y - d),
+    'W': lambda x, y, d: (x - d, y),
 }
 
 
@@ -35,22 +35,21 @@ TURNS = {
 }
 
 
-def parse_input(input_):
+def parse_input(lines):
     """Parse a long input string of instructions."""
-    for line in input_.strip().split('\n'):
+    for line in lines:
         for instruction in line.split(', '):
-            print(instruction)
             yield instruction[0], int(instruction[1:])
 
 
-def calc_blocks_away(instructions):
-    """Calculate the distance in blocks of the final position."""
+def distance_to_first_revisted(instructions):
+    """Calculate the distance in blocks to the first revisted position."""
     visited = set()
     x, y, facing = 0, 0, 'N'
     for turn, distance in instructions:
         facing = TURNS[turn][facing]
         for _ in range(distance):
-            x, y = MOVES[facing](x, y)
+            x, y = MOVES[facing](x, y, 1)
             if (x, y) in visited:
                 return abs(x) + abs(y)
             visited.add((x, y))
@@ -64,4 +63,6 @@ def step1(lines):
 
 def step2(lines):
     """Process solution for Day 1 Step 2."""
-    pass
+    instructions = parse_input(lines)
+    result = distance_to_first_revisted(instructions)
+    print('The first revisted location is {} blocks away.'.format(result))
