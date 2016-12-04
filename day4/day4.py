@@ -42,19 +42,6 @@ ORD_MAP = dict(zip(ascii_lowercase, range(26)))
 CHR_MAP = dict(zip(range(26), ascii_lowercase))
 
 
-def input_lines(filename):
-    """Return generator of lines from input file."""
-    with open(filename, 'r') as input_file:
-        for line in input_file:
-            yield line.strip()
-
-
-def sum_real_sectors():
-    """Return total sum of all real room sectors."""
-    rooms = input_lines('input.txt')
-    return sum(is_real_room(*parse_room(room)) for room in rooms)
-
-
 def is_real_room(name, sector, checksum):
     """Return int of sector if room is real; else return 0."""
     if order_name(name) == checksum:
@@ -80,14 +67,6 @@ def order_name(name):
     return ''.join(map(itemgetter(0), by_count))[:5]
 
 
-def find_northpole_object():
-    """Return the sector ID of room containing northpole object."""
-    rooms = input_lines('input.txt')
-    for name, sector in decode_real_rooms(rooms):
-        if 'northpole object' in name:
-            return sector
-
-
 def decode_real_rooms(rooms):
     """Return generator of decoded names of real rooms."""
     for room in rooms:
@@ -109,9 +88,15 @@ def rotate_letter(letter, mod):
     return CHR_MAP[moved % 26]
 
 
-if __name__ == '__main__':
-    result1 = sum_real_sectors()
-    print('Sum of all sector IDs is {}'.format(result1))
+def part1(lines):
+    """Return total sum of all real room sectors."""
+    result = sum(is_real_room(*parse_room(room)) for room in lines)
+    print('Sum of all sector IDs is {}'.format(result))
 
-    result2 = find_northpole_object()
-    print('The northpole objects are in sector {}'.format(result2))
+
+def part2(rooms):
+    """Return the sector ID of room containing northpole object."""
+    for name, sector in decode_real_rooms(rooms):
+        if 'northpole object' in name:
+            break
+    print('The northpole objects are in sector {}'.format(sector))
