@@ -2,6 +2,7 @@
 from __future__ import unicode_literals, division
 from importlib import import_module
 from itertools import tee
+from time import time
 import sys
 import re
 import os
@@ -32,8 +33,14 @@ def main(day_num, split=False):
 
     solution_modulename = SOLUTION_MODULE.format(dayname)
     day_module = import_module('.'.join((dayname, solution_modulename)))
+
+    timestamp1 = time.now()
     day_module.part1(lines1)
+    print('Part 1 ran in {}.'.format(time.now() - timestamp1))
+
+    timestamp2 = time.now()
     day_module.part2(lines2)
+    print('Part 2 ran in {}.'.format(time.now() - timestamp2))
 
 
 def input_lines(filename):
