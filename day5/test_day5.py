@@ -9,26 +9,27 @@ CASES = [
 
 SINGLE_CHAR_CASES = [
     (b'abc3231929', '1'),
+    (b'abc5017308', '8'),
+    (b'abc5357525', '4'),
 ]
 
 
 @pytest.mark.parametrize('door_id, result1, result2', CASES)
 def test_decode_password1(door_id, result1, result2):
     """Test that decode_password function returns expected result."""
-    from .solution_day5 import decode_password
-    assert decode_password(door_id) == result1
+    from .solution_day5 import decode_password1
+    assert decode_password1(door_id) == result1
 
 
 @pytest.mark.parametrize('door_id, result1, result2', CASES)
 def test_decode_password2(door_id, result1, result2):
     """Test that decode_password function returns expected result."""
-    from .solution_day5 import decode_password
-    assert decode_password(door_id) == result2
+    from .solution_day5 import decode_password2
+    assert decode_password2(door_id) == result2
 
 
 @pytest.mark.parametrize('bytes_val, result', SINGLE_CHAR_CASES)
-def test_get_password_char(bytes_val, result):
+def test_get_hashed_hex(bytes_val, result):
     """Test that get_password_char function returns expected char."""
-    from .solution_day5 import get_password_char
-    assert get_password_char(bytes_val) == result
-
+    from .solution_day5 import get_hashed_hex
+    assert get_hashed_hex(bytes_val)[5] == result
