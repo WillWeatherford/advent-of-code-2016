@@ -40,38 +40,77 @@ from __future__ import unicode_literals, division
 from itertools import count
 from hashlib import md5
 
+PASSWORD_LEN = 8
 FIVE_ZEROES = '0' * 5
 
 
 def part1(lines):
     """Run solution for Part 1."""
-    line = next(lines)
-    result = decode_password(line)
-    print('The door code for door ID {} is {}'.format(line, result))
+    # line = next(lines)
+    # result = decode_password1(line)
+    # print('The door code for door ID {} is {}'.format(line, result))
 
 
 def part2(lines):
     """Run solution for Part 2."""
+    line = next(lines)
+    result = decode_password2(line)
+    print('The second door code for door ID {} is {}'.format(line, result))
 
 
-def get_password_char(bytes_val):
+def get_hashed_hex(bytes_val):
     """Return a single string character; the 6th char in a md5 hash of val.
 
     If the hashed does not start with five zeroes, returns empty string.
     """
     hashed = md5(bytes_val)
-    hexed = hashed.hexdigest()
-    if hexed.startswith(FIVE_ZEROES):
-        return hexed[5]
-    return ''
+    return hashed.hexdigest()
 
 
-def decode_password(door_id):
-    """Return decoded password."""
-    result = ''
+def gen_valid_hexes(door_id):
+    """Return a generator of all valid iterative hashed hexes of door ID.
+
+    These are the hexidecimal value of the md5 hash of the door ID concatenated
+    with sequence of integers starting with 0.
+    """
     for n in count():
         bytes_val = '{}{}'.format(door_id, n).encode('ascii')
-        result += get_password_char(bytes_val)
-        if len(result) >= 8:
+        hashed_hex = get_hashed_hex(bytes_val)
+        if hashed_hex.startswith(FIVE_ZEROES):
+            yield hashed_hex
+
+
+def decode_password1(door_id):
+    """Return decoded password for part 1."""
+    result = []
+    for hashed_hex in gen_valid_hexes(door_id):
+        result.append(hashed_hex[5])
+        if len(result) >= PASSWORD_LEN:
             break
-    return result
+    return ''.join(result)
+
+
+def decode_password2(door_id):
+    """Return decoded password for part 2."""
+    found = 0
+    result = ['_'] * PASSWORD_LEN
+    for hashed_hex in gen_valid_hexes(door_id):
+        char = hashed_hex[6]
+
+        try:
+            position = int(hashed_hex[5])
+        except ValueError:
+            continue
+
+        try:
+            if result[position] != '_':
+                continue
+        except IndexError:
+            continue
+        else:
+            result[position] = char
+
+        found += 1
+        if found >= PASSWORD_LEN:
+            break
+    return ''.join(result)
