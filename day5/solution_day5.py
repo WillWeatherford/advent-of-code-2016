@@ -46,9 +46,9 @@ FIVE_ZEROES = '0' * 5
 
 def part1(lines):
     """Run solution for Part 1."""
-    # line = next(lines)
-    # result = decode_password1(line)
-    # print('The door code for door ID {} is {}'.format(line, result))
+    line = next(lines)
+    result = decode_password1(line)
+    print('The first door code for door ID {} is {}'.format(line, result))
 
 
 def part2(lines):
@@ -83,10 +83,8 @@ def gen_valid_hexes(door_id):
 def decode_password1(door_id):
     """Return decoded password for part 1."""
     result = []
-    for hashed_hex in gen_valid_hexes(door_id):
-        result.append(hashed_hex[5])
-        if len(result) >= PASSWORD_LEN:
-            break
+    hexes = gen_valid_hexes(door_id)
+    result = [next(hexes)[5] for _ in range(PASSWORD_LEN)]
     return ''.join(result)
 
 
@@ -94,23 +92,23 @@ def decode_password2(door_id):
     """Return decoded password for part 2."""
     found = 0
     result = ['_'] * PASSWORD_LEN
-    for hashed_hex in gen_valid_hexes(door_id):
-        char = hashed_hex[6]
+    hexes = gen_valid_hexes(door_id)
+    for _ in range(PASSWORD_LEN):
+        while True:
+            hashed_hex = next(hexes)
 
-        try:
-            position = int(hashed_hex[5])
-        except ValueError:
-            continue
-
-        try:
-            if result[position] != '_':
+            try:
+                position = int(hashed_hex[5])
+            except ValueError:
                 continue
-        except IndexError:
-            continue
-        else:
-            result[position] = char
 
-        found += 1
-        if found >= PASSWORD_LEN:
+            try:
+                if result[position] != '_':
+                    continue
+            except IndexError:
+                continue
+
+            char = hashed_hex[6]
+            result[position] = char
             break
     return ''.join(result)
