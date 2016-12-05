@@ -58,6 +58,11 @@ def part2(lines):
     print('The second door code for door ID {} is {}'.format(line, result))
 
 
+def get_bytes_val(door_id, n):
+    """Return a bytestring concatenation of door_id and index n."""
+    return '{}{}'.format(door_id, n).encode('ascii')
+
+
 def get_hashed_hex(bytes_val):
     """Return a single string character; the 6th char in a md5 hash of val.
 
@@ -74,7 +79,7 @@ def gen_valid_hexes(door_id):
     with sequence of integers starting with 0.
     """
     for n in count():
-        bytes_val = '{}{}'.format(door_id, n).encode('ascii')
+        bytes_val = get_bytes_val(door_id, n)
         hashed_hex = get_hashed_hex(bytes_val)
         if hashed_hex.startswith(FIVE_ZEROES):
             yield hashed_hex
