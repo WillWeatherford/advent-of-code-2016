@@ -82,7 +82,6 @@ def gen_valid_hexes(door_id):
 
 def decode_password1(door_id):
     """Return decoded password for part 1."""
-    result = []
     hexes = gen_valid_hexes(door_id)
     result = [next(hexes)[5] for _ in range(PASSWORD_LEN)]
     return ''.join(result)
@@ -90,9 +89,9 @@ def decode_password1(door_id):
 
 def decode_password2(door_id):
     """Return decoded password for part 2."""
-    found = 0
     result = ['_'] * PASSWORD_LEN
     hexes = gen_valid_hexes(door_id)
+
     for _ in range(PASSWORD_LEN):
         while True:
             hashed_hex = next(hexes)
