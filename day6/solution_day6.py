@@ -41,7 +41,6 @@ Given the recording in your puzzle input and this new decoding methodology, what
 """
 from __future__ import unicode_literals, division
 from collections import Counter
-from operator import itemgetter
 
 INPUT_LEN = 8
 
