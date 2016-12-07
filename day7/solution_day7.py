@@ -8,7 +8,7 @@ def part1(lines):
     """Run solution for Part 1."""
     count = 0
     for line in lines:
-        outsides, insides = parse_out(line)
+        outsides, insides = parse_parts(line)
         for part in insides:
             if has_abba(part):
                 break
@@ -20,20 +20,18 @@ def part1(lines):
     print(count)
 
 
-def parse_out(line):
-    outsides = []
-    insides = []
-    start = 0
+def parse_parts(line):
+    outsides = set()
+    insides = set()
     while True:
         try:
-            brack_start = line.index('[', start)
+            outside, line = line.split('[', 1)
         except ValueError:
-            outsides.append(line[start:])
+            outsides.add(line)
             break
-        brack_end = line.index(']', brack_start)
-        outsides.append(line[start:brack_start])
-        insides.append(line[brack_start:brack_end])
-        start = brack_end
+        inside, line = line.split(']', 1)
+        outsides.add(outside)
+        insides.add(inside)
     return outsides, insides
 
 
@@ -61,7 +59,7 @@ def part2(lines):
     """Run solution for Part 2."""
     count = 0
     for line in lines:
-        outsides, insides = parse_out(line)
+        outsides, insides = parse_parts(line)
         abas = set()
         for part in outsides:
             abas.update(get_abas(part))
