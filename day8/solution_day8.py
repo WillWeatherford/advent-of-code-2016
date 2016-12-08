@@ -58,7 +58,7 @@ def part1(lines):
     display = TinyDisplay(HEIGHT, WIDTH)
     for line in lines:
         display.operate(line)
-    print('{} cells are lit.'.format(display.count_lit()))
+    print('{} cells are lit.'.format(display.count_lit_pixels()))
 
 
 def part2(lines):
@@ -66,7 +66,7 @@ def part2(lines):
     display = TinyDisplay(HEIGHT, WIDTH)
     for line in lines:
         display.operate(line)
-    display.print_code()
+    display.print_screen()
 
 
 class TinyDisplay(object):
@@ -128,10 +128,10 @@ class TinyDisplay(object):
         for y in range(self.height):
             self.grid[y][col] = current_col[y - shifts]
 
-    def count_lit(self):
+    def count_lit_pixels(self):
         """Return number of lit pixels."""
-        return sum(chain(*self.grid))
+        return sum(map(lambda c: c == ON, chain(*self.grid)))
 
-    def print_code(self):
+    def print_screen(self):
         """Print lit pixels as '#'' and unlit cells as ' '."""
-        print('\n'.join(''.join(row) for row in self.rows))
+        print('\n'.join(''.join(row) for row in self.grid))
