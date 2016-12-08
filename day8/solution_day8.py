@@ -47,6 +47,11 @@ There seems to be an intermediate check of the voltage used by the display: afte
 from __future__ import unicode_literals, division
 from itertools import chain
 
+
+HEIGHT = 6
+WIDTH = 50
+
+
 def part1(lines):
     """Run solution for Part 1."""
     display = TinyDisplay()
@@ -64,10 +69,12 @@ def part2(lines):
 
 
 class TinyDisplay(object):
+    """A Python class representation of the tiny display in the challenge."""
 
-    def __init__(self):
-        self.height = 6
-        self.width = 50
+    def __init__(self, height, width):
+        """Initialize a tiny display."""
+        self.height = height
+        self.width = width
         self.grid = [[0] * self.width for _ in range(self.height)]
 
     def parse_command(self, line):
@@ -85,7 +92,9 @@ class TinyDisplay(object):
         method(*map(int, args))
 
     def rect(self, cols, rows):
-        """turns on all of the pixels in a rectangle at the top-left of the
+        """Turn on all pixels in upper left corner of grid.
+
+        Turns on all of the pixels in a rectangle at the top-left of the
         screen which is A wide and B tall.
         """
         for y in range(rows):
@@ -93,12 +102,13 @@ class TinyDisplay(object):
                 self.grid[y][x] = 1
 
     def rotate_row(self, row, shifts):
-        """Shifts all of the pixels in row A (0 is the top row) right by B
-        pixels. Pixels that would fall off the right end appear at the left end of the row.
+        """Shift all pixels in row right by given number of shifts.
+
+        0 is the top row.
+        Pixels that would fall off the right end appear at the left end of
+        the row.
         """
-        new_row = []
-        for x in range(self.width):
-            new_row.append(self.grid[row][x - shifts])
+        new_row = [self.grid[row][x - shifts] for x in range(self.width)]
         self.grid[row] = new_row
 
     def rotate_column(self, col, shifts):
