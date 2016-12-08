@@ -54,17 +54,17 @@ WIDTH = 50
 
 def part1(lines):
     """Run solution for Part 1."""
-    display = TinyDisplay()
+    display = TinyDisplay(HEIGHT, WIDTH)
     for line in lines:
-        display.parse_command(line)
+        display.operate(line)
     print('{} cells are lit.'.format(display.count_lit()))
 
 
 def part2(lines):
     """Run solution for Part 2."""
-    display = TinyDisplay()
+    display = TinyDisplay(HEIGHT, WIDTH)
     for line in lines:
-        display.parse_command(line)
+        display.operate(line)
     display.print_code()
 
 
@@ -77,6 +77,12 @@ class TinyDisplay(object):
         self.width = width
         self.grid = [[0] * self.width for _ in range(self.height)]
 
+    def operate(self, line):
+        """Execute an operation from a given string."""
+        cmd, args = self.parse_command(line)
+        method = getattr(self, cmd)
+        method(*map(int, args))
+
     def parse_command(self, line):
         """Parse a text command."""
         # r'(?P<cmd>rect|rotate\srow|rotate\scolumn)\s()'
@@ -88,8 +94,7 @@ class TinyDisplay(object):
             cmd = '_'.join(parts[:2])
             _, pos = parts[2].split('=')
             args = (pos, parts[-1])
-        method = getattr(self, cmd)
-        method(*map(int, args))
+        return cmd, args
 
     def rect(self, cols, rows):
         """Turn on all pixels in upper left corner of grid.
@@ -127,9 +132,5 @@ class TinyDisplay(object):
         return sum(chain(*self.grid))
 
     def print_code(self):
-        for topleft in range(0, self.width, 5):
-            segments = [row[topleft:topleft + 5] for row in self.grid]
-            segments = [''.join(map(lambda c: '#' if c else ' ', seg))
-                        for seg in segments]
-            print('\n'.join(segments))
-            print('\n')
+        for row in self.grid:
+            print(''.join(map(lambda c: '#' if c else ' ', row)))

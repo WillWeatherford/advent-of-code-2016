@@ -66,27 +66,27 @@ ROTATE_COL_CASES = [
 def test_rect(start, cols, rows, result):
     """Test that part1 function returns expected result."""
     from .solution_day8 import TinyDisplay
-    dis = TinyDisplay(len(start), len(start[0]))
-    dis.grid = start
-    dis.rect(cols, rows)
-    assert dis.grid == result
+    display = TinyDisplay(len(start), len(start[0]))
+    display.grid = start
+    display.rect(cols, rows)
+    assert display.grid == result
 
 
 @pytest.mark.parametrize('start, row, shifts, result', ROTATE_ROW_CASES)
 def test_rotate_row(start, row, shifts, result):
     """Test that part1 function returns expected result."""
     from .solution_day8 import TinyDisplay
-    dis = TinyDisplay(len(start), len(start[0]))
-    dis.grid = start
-    dis.rotate_row(row, shifts)
-    assert dis.grid == result
+    display = TinyDisplay(len(start), len(start[0]))
+    display.grid = start
+    display.rotate_row(row, shifts)
+    assert display.grid == result
 
 
 @pytest.mark.parametrize('start, col, shifts, result', ROTATE_COL_CASES)
 def test_rotate_col(start, col, shifts, result):
     """Test that part1 function returns expected result."""
     from .solution_day8 import TinyDisplay
-    dis = TinyDisplay(len(start), len(start[0]))
-    dis.grid = start
-    dis.rotate_column(col, shifts)
-    assert dis.grid == result
+    display = TinyDisplay(len(start), len(start[0]))
+    display.grid = start
+    display.rotate_column(col, shifts)
+    assert display.grid == result
