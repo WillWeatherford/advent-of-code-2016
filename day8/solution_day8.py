@@ -47,7 +47,8 @@ There seems to be an intermediate check of the voltage used by the display: afte
 from __future__ import unicode_literals, division
 from itertools import chain
 
-
+ON = '#'
+OFF = ' '
 HEIGHT = 6
 WIDTH = 50
 
@@ -75,7 +76,7 @@ class TinyDisplay(object):
         """Initialize a tiny display."""
         self.height = height
         self.width = width
-        self.grid = [[0] * self.width for _ in range(self.height)]
+        self.grid = [[OFF] * self.width for _ in range(self.height)]
 
     def operate(self, line):
         """Execute an operation from a given string."""
@@ -104,7 +105,7 @@ class TinyDisplay(object):
         """
         for y in range(rows):
             for x in range(cols):
-                self.grid[y][x] = 1
+                self.grid[y][x] = ON
 
     def rotate_row(self, row, shifts):
         """Shift all pixels in row right by given number of shifts.
@@ -128,9 +129,9 @@ class TinyDisplay(object):
             self.grid[y][col] = current_col[y - shifts]
 
     def count_lit(self):
-        """Return number of lit cells."""
+        """Return number of lit pixels."""
         return sum(chain(*self.grid))
 
     def print_code(self):
-        for row in self.grid:
-            print(''.join(map(lambda c: '#' if c else ' ', row)))
+        """Print lit pixels as '#'' and unlit cells as ' '."""
+        print('\n'.join(''.join(row) for row in self.rows))
