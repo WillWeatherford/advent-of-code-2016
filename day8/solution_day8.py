@@ -112,8 +112,11 @@ class TinyDisplay(object):
         self.grid[row] = new_row
 
     def rotate_column(self, col, shifts):
-        """shifts all of the pixels in column A (0 is the left column) down by B pixels.
-        Pixels that would fall off the bottom appear at the top of the column.
+        """Shift all pixels in col down by given number of shifts.
+
+        0 is the left column.
+        Pixels that would fall off the bottom appear at the left end of
+        the row.
         """
         current_col = [row[col] for row in self.grid]
         for y in range(self.height):

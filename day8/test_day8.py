@@ -2,42 +2,40 @@
 from __future__ import unicode_literals, division
 import pytest
 
+BLANK_3x3 = [[0, 0, 0],
+             [0, 0, 0],
+             [0, 0, 0]]
+
+PARTIAL_3x3 = [[1, 1, 0],
+               [1, 1, 0],
+               [0, 0, 0]]
+
 RECT_CASES = [
     (
-        [[0, 0, 0],
-         [0, 0, 0],
-         [0, 0, 0]],
+        BLANK_3x3,
         1, 1,
         [[1, 0, 0],
          [0, 0, 0],
          [0, 0, 0]],
     ),
     (
-        [[0, 0, 0],
-         [0, 0, 0],
-         [0, 0, 0]],
+        BLANK_3x3,
         2, 2,
-        [[1, 1, 0],
-         [1, 1, 0],
-         [0, 0, 0]],
+        PARTIAL_3x3,
     ),
 ]
 
 
 ROTATE_ROW_CASES = [
     (
-        [[1, 1, 0],
-         [1, 1, 0],
-         [0, 0, 0]],
+        PARTIAL_3x3,
         1, 1,
         [[1, 1, 0],
          [0, 1, 1],
          [0, 0, 0]],
     ),
     (
-        [[1, 1, 0],
-         [1, 1, 0],
-         [0, 0, 0]],
+        PARTIAL_3x3,
         1, 2,
         [[1, 1, 0],
          [1, 0, 1],
@@ -48,18 +46,14 @@ ROTATE_ROW_CASES = [
 
 ROTATE_COL_CASES = [
     (
-        [[1, 1, 0],
-         [1, 1, 0],
-         [0, 0, 0]],
+        PARTIAL_3x3,
         1, 1,
         [[1, 0, 0],
          [1, 1, 0],
          [0, 1, 0]],
     ),
     (
-        [[1, 1, 0],
-         [1, 1, 0],
-         [0, 0, 0]],
+        PARTIAL_3x3,
         1, 2,
         [[1, 1, 0],
          [1, 0, 0],
@@ -96,7 +90,3 @@ def test_rotate_col(start, col, shifts, result):
     dis.grid = start
     dis.rotate_column(col, shifts)
     assert dis.grid == result
-
-# @pytest.mark.parametrize('', )
-# def test_part2():
-#     """Test that part1 function returns expected result."""
