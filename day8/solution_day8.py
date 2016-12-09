@@ -51,6 +51,8 @@ ON = '#'
 OFF = ' '
 HEIGHT = 6
 WIDTH = 50
+RECT_PAT = r'(?P<cmd>rect)\s(?P<arg1>\d+)x(?P<arg2>\d+)'
+ROTATE_PAT = r'(?P<cmd1>rotate)\s(row|column)\s(x|y)=(?P<arg1>\d+).(?P<arg2>\d+)'
 
 
 def part1(lines):
@@ -86,7 +88,6 @@ class TinyDisplay(object):
 
     def parse_command(self, line):
         """Parse a text command."""
-        # r'(?P<cmd>rect|rotate\srow|rotate\scolumn)\s()'
         if line.startswith('rect'):
             cmd, rest = line.split()
             args = rest.split('x')
