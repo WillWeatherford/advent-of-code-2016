@@ -66,14 +66,13 @@ def decompress(chars, use_recursion):
             break
 
         yield len(chars[:match.start()])
-        # chars = chars[match.end():]
-        
         num, mult = map(int, match.groups())
-
-        to_multiply = chars[match.end():match.end() + num]
-        chars = chars[match.end() + num:]
+        target = match.end()
+        to_multiply = chars[target:target + num]
 
         if use_recursion:
             yield mult * sum(decompress(to_multiply, use_recursion))
         else:
             yield mult * num
+
+        chars = chars[target + num:]
