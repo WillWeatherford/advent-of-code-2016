@@ -31,13 +31,10 @@ def decompress(chars, part2):
         yield len(chars[:match.start()])  # Any leading chars before (NxM) pattern
         chars = chars[match.end():]  # Snip off the (NxM) pattern
         num, mult = map(int, match.groups())
-        to_multipy = chars[:num]  # The slice to be multplied
+        to_multiply = chars[:num]  # The slice to be multplied
         chars = chars[num:]  # Truncate remaining chars
 
-        if not part2:
+        if part2:
+            yield sum(decompress(to_multiply, part2)) * mult
+        else:
             yield num * mult
-            continue
-
-        for _ in range(mult):
-            for count in decompress(to_multipy, part2):
-                yield count
