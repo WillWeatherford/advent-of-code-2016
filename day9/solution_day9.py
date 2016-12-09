@@ -38,6 +38,7 @@ What is the decompressed length of the file using this improved format?
 
 """
 from __future__ import unicode_literals, division
+from itertools import islice, takewhile
 import re
 
 PAT = r'\((?P<num>\d+)x(?P<mult>\d+)\)'
@@ -47,14 +48,14 @@ def part1(lines):
     """Run solution for Part 1."""
     line = next(lines)
     result = sum(decompress(line, False))
-    print(result)
+    print('{} shallowly decompressed characters.'.format(result))
 
 
 def part2(lines):
     """Run solution for Part 2."""
     line = next(lines)
     result = sum(decompress(line, True))
-    print(result)
+    print('{} recursively decompressed characters.'.format(result))
 
 
 def decompress(chars, use_recursion):
@@ -76,3 +77,26 @@ def decompress(chars, use_recursion):
             yield mult * num
 
         chars = chars[target + num:]
+
+
+def decompress2(chars, use_recursion):
+    """Return sum of char length in decompressed strings.
+
+    Re-implementation of reddit user /u/barneybug's solution:
+    https://www.reddit.com/r/adventofcode/comments/5hbygy/2016_day_9_solutions/daz5a00/
+    """
+    count = 0
+    chars = iter(chars)
+    for char in chars:
+        if char != '(':
+            count += 1
+            continue
+        num = int(''.join(takewhile(lambda c: c.isdigit(), chars)))
+        mult = int(''.join(takewhile(lambda c: c.isdigit(), chars)))
+        to_multiply = ''.join(islice(chars, int(num)))
+
+        if use_recursion:
+            count += mult * decompress2(to_multiply, use_recursion)
+        else:
+            count += mult * num
+    return count
