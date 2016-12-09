@@ -21,7 +21,8 @@ def part2(lines):
     print(result)
 
 
-def decompress(chars, part2):
+def decompress(chars, use_recursion):
+    """Return a generator over lengths of the decompressed string in chunks."""
     while chars:
         match = re.search(PAT, chars)
         if match is None:
@@ -34,7 +35,7 @@ def decompress(chars, part2):
         to_multiply = chars[:num]  # The slice to be multplied
         chars = chars[num:]  # Truncate remaining chars
 
-        if part2:
-            yield sum(decompress(to_multiply, part2)) * mult
+        if use_recursion:
+            yield sum(decompress(to_multiply, use_recursion)) * mult
         else:
             yield num * mult
