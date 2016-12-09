@@ -3,6 +3,9 @@ from __future__ import unicode_literals, division
 import pytest
 
 CASES = [
+    ('', 0, 0),
+    ('A', 1, 1),
+    ('ABC', 3, 3),
     ('(3x3)XYZ', 9, 9),
     ('X(8x2)(3x3)ABCY', 18, 20),
     ('(27x12)(20x12)(13x14)(7x10)(1x12)A', 324, 241920),
