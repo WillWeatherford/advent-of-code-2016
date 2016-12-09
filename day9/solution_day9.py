@@ -25,19 +25,19 @@ def decompress(chars, part2):
     while chars:
         match = re.search(PAT, chars)
         if match is None:
-            yield len(chars)
+            yield len(chars)  # Any remaining chars outside a multiplied
             break
-        else:
-            before = chars[:match.start()]
-            yield len(before)
-            chars = chars[match.end():]
-            num, mult = map(int, match.groups())
-            to_multipy = chars[:num]
-            chars = chars[num:]  # remainder
 
-            if not part2:
-                yield num * mult
-                continue
+        yield len(chars[:match.start()])  # Any leading chars before (NxM) pattern
+        chars = chars[match.end():]  # Snip off the (NxM) pattern
+        num, mult = map(int, match.groups())
+        to_multipy = chars[:num]  # The slice to be multplied
+        chars = chars[num:]  # Truncate remaining chars
 
-            for count in decompress(to_multipy * mult, part2):
+        if not part2:
+            yield num * mult
+            continue
+
+        for _ in range(mult):
+            for count in decompress(to_multipy, part2):
                 yield count
