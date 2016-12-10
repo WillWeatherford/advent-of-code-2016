@@ -11,6 +11,11 @@ GIVE_PAT = r'^bot (\d+) gives low to (bot|output) (\d+) and high to (bot|output)
 
 def part1(lines):
     """Run solution for Part 1."""
+    result = process_solution(lines)
+    print('Bot # {} is the target.'.format(result))
+
+
+def process_solution(lines):
     bots = {}
     outputs = {}
     to_do = deque(lines)
@@ -28,6 +33,7 @@ def part1(lines):
             if low == 17 and high == 61:
                 print('TARGET FOUND')
                 print(giver)
+                return giver
             locals()[low_type + 's'].setdefault(low_dest, []).append(low)
             locals()[high_type + 's'].setdefault(high_dest, []).append(high)
             bots[giver] = []
