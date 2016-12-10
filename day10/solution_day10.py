@@ -15,7 +15,7 @@ def part1(lines):
     """Run solution for Part 1."""
     target = (17, 61)
     result = process_instructions(lines, target)
-    print('Bot # {} is the target.'.format(result))
+    print('Bot {} processes chips {} and {}.'.format(result, *target))
 
 
 def part2(lines):
@@ -51,4 +51,5 @@ def process_instructions(lines, target=None):
             locals()[low_type + 's'].setdefault(low_dest, []).append(low)
             locals()[high_type + 's'].setdefault(high_dest, []).append(high)
             bots[giver] = []
+
     return outputs
