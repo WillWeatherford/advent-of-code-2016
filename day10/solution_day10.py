@@ -2,47 +2,40 @@
 
 """
 from __future__ import unicode_literals, division
-from itertools import tee
+from collections import deque
 import re
 
-IN_PAT = r'value (\d+) goes to bot (\d+)'
-GIVE_PAT = r'bot (\d+) gives low to (bot|output) (\d+) and high to (bot|output) (\d+)'
+IN_PAT = r'^value (\d+) goes to bot (\d+)'
+GIVE_PAT = r'^bot (\d+) gives low to (bot|output) (\d+) and high to (bot|output) (\d+)'
 
 
 def part1(lines):
     """Run solution for Part 1."""
-    run1, run2 = tee(lines, 2)
-    inputs = (line for line in run1 if line.startswith('value'))
-    moves = (line for line in run2 if line.startswith('bot'))
+    bot = {}
+    output = {}
+    to_do = deque(lines)
+    while to_do:
+        line = to_do.pop()
+        if line.startswith('value'):
+            chip, getter = re.match(IN_PAT, line).groups()
+            bot.setdefault(getter, []).append(int(chip))
+        elif line.startswith('bot'):
+            giver, low_type, low_dest, high_type, high_dest = re.match(GIVE_PAT, line).groups()
+            if len(bot.get(giver, [])) < 2:
+                to_do.appendleft(line)
+                continue
+            low, high = sorted(bot[giver])
+            if low == 17 and high == 61:
+                print('TARGET FOUND')
+                print(giver)
+            locals()[low_type].setdefault(low_dest, []).append(low)
+            locals()[high_type].setdefault(high_dest, []).append(high)
+            bot[giver] = []
+    prod = 1
+    for n in range(3):
+        prod *= output[str(n)].pop()
+    print(prod)
 
-    outputs = {}
-    bots = {}
-    for inp in inputs:
-        match = re.match(IN_PAT, inp)
-        chip, bot = match.groups()
-        bots.setdefault(bot, []).append(int(chip))
-        assert len(bots[bot]) < 3
-
-    for move in moves:
-        match = re.match(GIVE_PAT, move)
-        from_bot, low_to_type, low_to, high_to_type, high_to = match.groups()
-
-        try:
-            low, high = sorted(bots[from_bot])
-        except (KeyError, ValueError):
-            continue
-        if low == 17 and high == 61:
-            print('TARGET FOUND')
-            print('Bot # {}'.format(from_bot))
-            return
-        if low_to_type == 'bot':
-            bots.setdefault(low_to, []).append(low)
-        else:
-            outputs.setdefault(low_to, []).append(low)
-        if high_to_type == 'bot':
-            bots.setdefault(high_to, []).append(high)
-        else:
-            outputs.setdefault(high_to, []).append(high)
 
 
 def part2(lines):
