@@ -20,7 +20,7 @@ def part2(lines):
     """Run solution for Part 2."""
 
 
-def process_solution(lines, target):
+def process_solution(lines, target=None):
     bots = {}
     outputs = {}
     to_do = deque(lines)
@@ -29,8 +29,10 @@ def process_solution(lines, target):
         if line.startswith('value'):
             chip, getter = re.match(IN_PAT, line).groups()
             bots.setdefault(getter, []).append(int(chip))
+
         elif line.startswith('bot'):
-            giver, low_type, low_dest, high_type, high_dest = re.match(GIVE_PAT, line).groups()
+            match = re.match(GIVE_PAT, line)
+            giver, low_type, low_dest, high_type, high_dest = match.groups()
             if len(bots.get(giver, [])) < 2:
                 to_do.appendleft(line)
                 continue
