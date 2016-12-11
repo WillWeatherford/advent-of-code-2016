@@ -30,8 +30,10 @@ def create_state(lines):
 
 
 def simulate(orig_state):
+    found_states = {make_hashable_state(orig_state), }
     to_do = deque((orig_state, move, 0) for move in find_moves(orig_state))
     while to_do:
+        # print('{} moves to evaluate'.format(len(to_do)))
         state, move, moves_so_far = to_do.pop()
 
         if is_complete(state):
@@ -43,14 +45,32 @@ def simulate(orig_state):
             continue
 
         if is_invalid(state):
-            print('Invalid state found.')
+            # print('Invalid state found.')
             continue
 
         new_state = make_move(state, *move)
+        hashable_state = make_hashable_state(new_state)
+        if hashable_state in found_states:
+            print('State already found.')
+            continue
+        found_states.add(hashable_state)
+
         for move in find_moves(new_state):
             to_do.appendleft((new_state, move, moves_so_far + 1))
     print('Failed to find')
     return inf
+
+
+def make_hashable_state(state):
+    hashable_state = []
+    elevator = state.pop('elevator')
+    for n, floor in sorted(state.items()):
+        for obj_type, elements in sorted(floor.items()):
+            for element in sorted(elements):
+                hashable_state.append(' '.join((str(n), element, obj_type)))
+    hashable_state.append(' '.join(('elevator', str(elevator))))
+    state['elevator'] = elevator
+    return ' '.join(hashable_state)
 
 
 def make_move(state, destination, cargos):
@@ -86,10 +106,9 @@ def find_moves(state):
     if current_floor > 1:
         destinations.append(current_floor - 1)
 
-    empty = ((), )
     singles = ((obj, ) for obj in objects_on_floor(state, current_floor))
     pairs = combinations(objects_on_floor(state, current_floor), 2)
-    cargos = chain(pairs, singles, empty)
+    cargos = chain(pairs, singles)
 
     return product(destinations, cargos)
 
