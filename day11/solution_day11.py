@@ -5,6 +5,7 @@ from __future__ import unicode_literals, division
 from itertools import chain, combinations, product
 from copy import deepcopy
 from math import inf
+from collections import deque
 import re
 
 LINE_PAT = r'(\w+ium)(\sgenerator|\-compatible\smicrochip)'
@@ -14,7 +15,7 @@ MAX_MOVES = 30
 def part1(lines):
     """Run solution for Part 1."""
     state = create_state(lines)
-    result = simulate(state, 0)
+    result = simulate(state)
     print('Lowest number of moves: {}'.format(result))
 
 
@@ -28,25 +29,32 @@ def create_state(lines):
     return state
 
 
-def simulate(state, moves_so_far):
-    if is_complete(state):
-        print('Solution found in {} moves'.format(moves_so_far))
-        return moves_so_far
-    if moves_so_far > MAX_MOVES:
-        print('Solution not found within {} moves'.format(MAX_MOVES))
-        return inf
-    if is_invalid(state):
-        print('Invalid state found.')
-        return inf
-    moves_counts = []
-    for start, destination, cargos in find_moves(state):
-        new_state = make_move(state, start, destination, cargos)
-        moves_count = simulate(new_state, moves_so_far + 1)
-        moves_counts.append(moves_count)
-    return min(moves_counts)
+def simulate(orig_state):
+    to_do = deque((orig_state, move, 0) for move in find_moves(orig_state))
+    while to_do:
+        state, move, moves_so_far = to_do.pop()
+
+        if is_complete(state):
+            print('Solution found in {} moves'.format(moves_so_far))
+            return moves_so_far
+
+        if moves_so_far > MAX_MOVES:
+            print('Solution not found within {} moves'.format(MAX_MOVES))
+            continue
+
+        if is_invalid(state):
+            print('Invalid state found.')
+            continue
+
+        new_state = make_move(state, *move)
+        for move in find_moves(new_state):
+            to_do.appendleft((new_state, move, moves_so_far + 1))
+    print('Failed to find')
+    return inf
 
 
-def make_move(state, start, destination, cargos):
+def make_move(state, destination, cargos):
+    start = state['elevator']
     new_state = deepcopy(state)
     new_state['elevator'] = destination
     if not cargos:
@@ -83,7 +91,7 @@ def find_moves(state):
     pairs = combinations(objects_on_floor(state, current_floor), 2)
     cargos = chain(pairs, singles, empty)
 
-    return product((current_floor, ), destinations, cargos)
+    return product(destinations, cargos)
 
 
 def objects_on_floor(state, floor):
