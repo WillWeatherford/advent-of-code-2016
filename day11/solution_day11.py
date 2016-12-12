@@ -55,10 +55,33 @@ def simulate(orig_state):
             continue
         found_states.add(hashable_state)
 
-        for move in find_moves(new_state):
+        for next_move in find_moves(new_state):
+            if is_great_move(new_state, *next_move):
+                to_do.append((new_state, move, moves_so_far + 1))
+            if is_bad_move(new_state, *next_move):
+                continue
             to_do.appendleft((new_state, move, moves_so_far + 1))
     print('Failed to find')
     return inf
+
+
+def is_great_move(state, destination, cargos):
+    if destination < state['elevator']:
+        return False
+    if len(cargos) < 2:
+        return False
+    return cargos[0][1] == cargos[1][1]
+
+
+def is_bad_move(state, destination, cargos):
+    start = state['elevator']
+    if destination > start:
+        return False
+    objects_below = 0
+    for n in range(start - 1, 0, -1):
+        objects_below += len(state[n]['generators'])
+        objects_below += len(state[n]['microchips'])
+    return objects_below == 0
 
 
 def make_hashable_state(state):
@@ -77,8 +100,6 @@ def make_move(state, destination, cargos):
     start = state['elevator']
     new_state = deepcopy(state)
     new_state['elevator'] = destination
-    if not cargos:
-        return new_state
     for obj_type, element in cargos:
         new_state[start][obj_type].remove(element)
         new_state[destination][obj_type].add(element)
@@ -86,7 +107,6 @@ def make_move(state, destination, cargos):
 
 
 def parse_line(line):
-    """Return a list of the abbreviations for each element object."""
     output = {'generators': set(), 'microchips': set()}
     for element, obj_type in re.findall(LINE_PAT, line):
         if obj_type.endswith('chip'):
@@ -124,7 +144,7 @@ def find_elevator(state):
 
 
 def is_complete(state):
-    return len(state[4]) > 10
+    return len(state[4]['generators']) == 5 and len(state[4]['microchips']) == 5
 
 
 def is_invalid(state):
