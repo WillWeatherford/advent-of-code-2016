@@ -13,7 +13,7 @@ LINE_PAT = r'(\w+ium)(\sgenerator|\-compatible\smicrochip)'
 MAX_MOVES = 30
 
 
-State = namedtuple('State', ('moves_so_far', 'elevator', 'pairs'))
+State = namedtuple('State', ('elevator', 'pairs'))
 State.__eq__ = lambda self, other: set(self.pairs) == set(other.pairs)
 
 
@@ -49,13 +49,15 @@ def create_initial_state(lines):
                 generators[element] = floor
     chips_pos = map(itemgetter(1), sorted(microchips.items()))
     gens_pos = map(itemgetter(1), sorted(generators.items()))
-    return State(0, 0, tuple(zip(chips_pos, gens_pos)))
+    return State(0, tuple(zip(chips_pos, gens_pos)))
 
 
 def simulate(initial_state):
+    moves = -1
     found_states = {initial_state}
     to_do = deque([initial_state])
     while to_do:
+        moves += 1
         print('{} states found so far'.format(len(found_states)))
         current_state = to_do.pop()
         for next_move in find_moves(current_state):
@@ -63,8 +65,8 @@ def simulate(initial_state):
             # import pdb;pdb.set_trace()
             state = make_move(current_state, *next_move)
             if is_complete(state):
-                print('Solution found in {} moves'.format(state.moves_so_far))
-                return state.moves_so_far
+                print('Solution found in {} moves'.format(moves))
+                return moves
 
             if state in found_states:
                 # print('State already found.')
@@ -122,7 +124,7 @@ def make_move(state, destination, cargos):
     for pair, obj_type in cargos:
         new_pairs[pair][obj_type] = destination
     new_pairs = tuple(tuple(pair) for pair in new_pairs)
-    return State(state.moves_so_far + 1, destination, new_pairs)
+    return State(destination, new_pairs)
 
 
 def objects_on_floor(state, floor):
