@@ -14,7 +14,7 @@ MAX_MOVES = 30
 
 
 State = namedtuple('State', ('moves_so_far', 'elevator', 'pairs'))
-State.__eq__ = lambda self, other: set(self) == set(other)
+State.__eq__ = lambda self, other: set(self.pairs) == set(other.pairs)
 
 
 def part1(lines):
@@ -49,26 +49,30 @@ def create_initial_state(lines):
                 generators[element] = floor
     chips_pos = map(itemgetter(1), sorted(microchips.items()))
     gens_pos = map(itemgetter(1), sorted(generators.items()))
-    return State(0, 1, tuple(zip(chips_pos, gens_pos)))
+    return State(0, 0, tuple(zip(chips_pos, gens_pos)))
 
 
 def simulate(initial_state):
     found_states = {initial_state}
     to_do = deque([initial_state])
     while to_do:
+        print('{} states found so far'.format(len(found_states)))
         current_state = to_do.pop()
         for next_move in find_moves(current_state):
             # trim out based on move -- don't move down
+            # import pdb;pdb.set_trace()
             state = make_move(current_state, *next_move)
             if is_complete(state):
                 print('Solution found in {} moves'.format(state.moves_so_far))
                 return state.moves_so_far
 
             if state in found_states:
-                print('State already found.')
+                # print('State already found.')
                 continue
+            found_states.add(state)
 
             if is_invalid(state):
+                # print('Invalid state.')
                 continue
 
             to_do.appendleft(state)
@@ -85,7 +89,7 @@ def simulate(initial_state):
 def find_moves(state):
     singles = ((obj, ) for obj in objects_at_elevator(state))
     doubles = doubles_at_elevator(state)
-    cargos = chain(singles, doubles)
+    cargos = chain(doubles, singles)
     moves = product(destinations(state), cargos)
     return moves
 
@@ -113,12 +117,12 @@ def objects_at_elevator(state):
             yield pair, obj_type
 
 
-def make_move(state, destinations, cargos):
-    new_pairs = state.pairs
+def make_move(state, destination, cargos):
+    new_pairs = [list(pair) for pair in state.pairs]
     for pair, obj_type in cargos:
-        pass
-
-    return new_state
+        new_pairs[pair][obj_type] = destination
+    new_pairs = tuple(tuple(pair) for pair in new_pairs)
+    return State(state.moves_so_far + 1, destination, new_pairs)
 
 
 def objects_on_floor(state, floor):
@@ -132,14 +136,15 @@ def find_elevator(state):
 
 
 def is_complete(state):
-    return len(state[4]['generators']) == 5 and len(state[4]['microchips']) == 5
+    return all(pair == (3, 3) for pair in state.pairs)
 
 
 def is_invalid(state):
-    for n in range(1, 5):
-        for element in state[n]['microchips']:
-            if state[n]['generators'] and element not in state[n]['generators']:
-                return True
+    for chip, gen in state.pairs:
+        if chip != gen:
+            for _, other_gen in state.pairs:
+                if other_gen == chip:
+                    return True
     return False
 
 
