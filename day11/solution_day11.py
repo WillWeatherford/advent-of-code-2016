@@ -5,17 +5,22 @@ from __future__ import unicode_literals, division
 from itertools import chain, combinations, product
 from copy import deepcopy
 from math import inf
-from collections import deque
+from collections import deque, namedtuple
+from operator import itemgetter
 import re
 
 LINE_PAT = r'(\w+ium)(\sgenerator|\-compatible\smicrochip)'
 MAX_MOVES = 30
 
 
+State = namedtuple('State', ('moves_so_far', 'elevator', 'pairs'))
+State.__eq__ = lambda self, other: set(self) == set(other)
+
+
 def part1(lines):
     """Run solution for Part 1."""
-    state = create_state(lines)
-    result = simulate(state)
+    initial_state = create_initial_state(lines)
+    result = simulate(initial_state)
     print('Lowest number of moves: {}'.format(result))
 
 
@@ -23,15 +28,33 @@ def part2(lines):
     """Run solution for Part 2."""
 
 
-def create_state(lines):
-    state = dict(zip(range(1, 5), map(parse_line, lines)))
-    state['elevator'] = 1
-    return state
+def parse_line(line):
+    output = {'generators': set(), 'microchips': set()}
+    for element, obj_type in re.findall(LINE_PAT, line):
+        if obj_type.endswith('chip'):
+            output['microchips'].add(element)
+        elif obj_type.endswith('tor'):
+            output['generators'].add(element)
+    return output
 
 
-def simulate(orig_state):
-    found_states = {make_hashable_state(orig_state), }
-    to_do = deque((orig_state, move, 0) for move in find_moves(orig_state))
+def create_initial_state(lines):
+    microchips = {}
+    generators = {}
+    for floor, line in enumerate(lines):
+        for element, obj_type in re.findall(LINE_PAT, line):
+            if obj_type.endswith('chip'):
+                microchips[element] = floor
+            elif obj_type.endswith('tor'):
+                generators[element] = floor
+    chips_pos = map(itemgetter(1), sorted(microchips.items()))
+    gens_pos = map(itemgetter(1), sorted(generators.items()))
+    return State(0, 1, tuple(zip(chips_pos, gens_pos)))
+
+
+def simulate(initial_state):
+    found_states = {initial_state}
+    to_do = deque([initial_state])
     while to_do:
         # print('{} moves to evaluate'.format(len(to_do)))
         state, move, moves_so_far = to_do.pop()
@@ -104,18 +127,6 @@ def make_move(state, destination, cargos):
         new_state[start][obj_type].remove(element)
         new_state[destination][obj_type].add(element)
     return new_state
-
-
-def parse_line(line):
-    output = {'generators': set(), 'microchips': set()}
-    for element, obj_type in re.findall(LINE_PAT, line):
-        if obj_type.endswith('chip'):
-            output['microchips'].add(element)
-        elif obj_type.endswith('tor'):
-            output['generators'].add(element)
-        else:
-            raise AssertionError
-    return output
 
 
 def find_moves(state):
