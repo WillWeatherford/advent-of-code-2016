@@ -56,67 +56,22 @@ def simulate(initial_state):
     found_states = {initial_state}
     to_do = deque([initial_state])
     while to_do:
-        # print('{} moves to evaluate'.format(len(to_do)))
-        state, move, moves_so_far = to_do.pop()
+        current_state = to_do.pop()
+        for next_move in find_moves(current_state):
+            # trim out based on move
+            state = make_move(current_state, *next_move)
+            if is_complete(state):
+                print('Solution found in {} moves'.format(state.moves_so_far))
+                return state.moves_so_far
 
-        if is_complete(state):
-            print('Solution found in {} moves'.format(moves_so_far))
-            return moves_so_far
-
-        if moves_so_far > MAX_MOVES:
-            print('Solution not found within {} moves'.format(MAX_MOVES))
-            continue
-
-        if is_invalid(state):
-            # print('Invalid state found.')
-            continue
-
-        new_state = make_move(state, *move)
-        hashable_state = make_hashable_state(new_state)
-        if hashable_state in found_states:
-            print('State already found.')
-            continue
-        found_states.add(hashable_state)
-
-        for next_move in find_moves(new_state):
-            if is_great_move(new_state, *next_move):
-                to_do.append((new_state, move, moves_so_far + 1))
-            if is_bad_move(new_state, *next_move):
+            if state in found_states:
+                print('State already found.')
                 continue
-            to_do.appendleft((new_state, move, moves_so_far + 1))
-    print('Failed to find')
-    return inf
 
+            if is_invalid(state):
+                continue
 
-def is_great_move(state, destination, cargos):
-    if destination < state['elevator']:
-        return False
-    if len(cargos) < 2:
-        return False
-    return cargos[0][1] == cargos[1][1]
-
-
-def is_bad_move(state, destination, cargos):
-    start = state['elevator']
-    if destination > start:
-        return False
-    objects_below = 0
-    for n in range(start - 1, 0, -1):
-        objects_below += len(state[n]['generators'])
-        objects_below += len(state[n]['microchips'])
-    return objects_below == 0
-
-
-def make_hashable_state(state):
-    hashable_state = []
-    elevator = state.pop('elevator')
-    for n, floor in sorted(state.items()):
-        for obj_type, elements in sorted(floor.items()):
-            for element in sorted(elements):
-                hashable_state.append(' '.join((str(n), element, obj_type)))
-    hashable_state.append(' '.join(('elevator', str(elevator))))
-    state['elevator'] = elevator
-    return ' '.join(hashable_state)
+            to_do.appendleft(state)
 
 
 def make_move(state, destination, cargos):
@@ -164,3 +119,22 @@ def is_invalid(state):
             if state[n]['generators'] and element not in state[n]['generators']:
                 return True
     return False
+
+
+def is_great_move(state, destination, cargos):
+    if destination < state['elevator']:
+        return False
+    if len(cargos) < 2:
+        return False
+    return cargos[0][1] == cargos[1][1]
+
+
+def is_bad_move(state, destination, cargos):
+    start = state['elevator']
+    if destination > start:
+        return False
+    objects_below = 0
+    for n in range(start - 1, 0, -1):
+        objects_below += len(state[n]['generators'])
+        objects_below += len(state[n]['microchips'])
+    return objects_below == 0
