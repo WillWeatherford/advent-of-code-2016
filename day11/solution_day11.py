@@ -58,7 +58,7 @@ def simulate(initial_state):
     while to_do:
         current_state = to_do.pop()
         for next_move in find_moves(current_state):
-            # trim out based on move
+            # trim out based on move -- don't move down
             state = make_move(current_state, *next_move)
             if is_complete(state):
                 print('Solution found in {} moves'.format(state.moves_so_far))
@@ -73,30 +73,52 @@ def simulate(initial_state):
 
             to_do.appendleft(state)
 
-
-def make_move(state, destination, cargos):
-    start = state['elevator']
-    new_state = deepcopy(state)
-    new_state['elevator'] = destination
-    for obj_type, element in cargos:
-        new_state[start][obj_type].remove(element)
-        new_state[destination][obj_type].add(element)
-    return new_state
+# single chip
+# single generator
+# 2x generator
+# 2x chip
+# chip and gen of same element
+    # don't move down
+# NOT chip and gen of different elements
 
 
 def find_moves(state):
-    current_floor = find_elevator(state)
-    destinations = []
-    if current_floor < 4:
-        destinations.append(current_floor + 1)
-    if current_floor > 1:
-        destinations.append(current_floor - 1)
+    singles = ((obj, ) for obj in objects_at_elevator(state))
+    doubles = doubles_at_elevator(state)
+    cargos = chain(singles, doubles)
+    moves = product(destinations(state), cargos)
+    return moves
 
-    singles = ((obj, ) for obj in objects_on_floor(state, current_floor))
-    pairs = combinations(objects_on_floor(state, current_floor), 2)
-    cargos = chain(pairs, singles)
 
-    return product(destinations, cargos)
+def destinations(state):
+    if state.elevator > 0:
+        yield state.elevator - 1
+    if state.elevator < 3:
+        yield state.elevator + 1
+
+
+def doubles_at_elevator(state):
+    # Discrete combinations, no duplicates or repeats
+    for obj1, obj2 in combinations(objects_at_elevator(state), 2):
+        # If they are different types AND different elements
+        if obj1[0] != obj2[0] and obj1[1] != obj1[1]:
+            continue
+        yield obj1, obj2
+
+
+def objects_at_elevator(state):
+    for pair, obj_type in product(range(len(state.pairs)), range(2)):
+        # Check if object is on the same floor as the elevator
+        if state.pairs[pair][obj_type] == state.elevator:
+            yield pair, obj_type
+
+
+def make_move(state, destinations, cargos):
+    new_pairs = state.pairs
+    for pair, obj_type in cargos:
+        pass
+
+    return new_state
 
 
 def objects_on_floor(state, floor):
