@@ -12,20 +12,28 @@ import re
 LINE_PAT = r'(\w+ium)(\sgenerator|\-compatible\smicrochip)'
 MAX_MOVES = 30
 
-
-# State = namedtuple('State', ('elevator', 'pairs'))
-# State.__eq__ = lambda self, other: set(self.pairs) == set(other.pairs)
+PART2_EXTRA_INPUT = [
+    'An elerium generator.',
+    'An elerium-compatible microchip.',
+    'A dilithium generator.',
+    'A dilithium-compatible microchip.',
+]
 
 
 def part1(lines):
     """Run solution for Part 1."""
     initial_state = create_initial_state(lines)
     result = simulate(initial_state)
-    print('Lowest number of moves: {}'.format(result))
+    print('Lowest number of moves for part 1: {}'.format(result))
 
 
 def part2(lines):
     """Run solution for Part 2."""
+    lines = list(lines)
+    lines[0] += ' '.join(PART2_EXTRA_INPUT)
+    initial_state = create_initial_state(lines)
+    result = simulate(initial_state)
+    print('Lowest number of moves for part 2: {}'.format(result))
 
 
 def create_initial_state(lines):
