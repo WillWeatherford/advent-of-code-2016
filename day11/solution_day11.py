@@ -223,6 +223,7 @@ def simulate(initial_state):
 
 
 def find_new_states(state):
+    """Return generator of all adjacent states."""
     singles = ((obj, ) for obj in objects_at_elevator(state))
     doubles = doubles_at_elevator(state)
     cargos = chain(doubles, singles)
@@ -231,6 +232,7 @@ def find_new_states(state):
 
 
 def destinations(state):
+    """Return generator of up to 2 valid destinations to move (up/down)."""
     elevator = state[0]
     if elevator > 0:
         yield elevator - 1
@@ -239,6 +241,7 @@ def destinations(state):
 
 
 def objects_at_elevator(state):
+    """Return generator of indices of objects on same floor as elevator ."""
     elevator, pairs = state
     for pair, obj_type in product(range(len(pairs)), range(2)):
         # Check if object is on the same floor as the elevator
@@ -247,6 +250,7 @@ def objects_at_elevator(state):
 
 
 def doubles_at_elevator(state):
+    """Return generator of 2-object combinations at same floor as elevator."""
     # Discrete combinations, no duplicates or repeats
     for obj1, obj2 in combinations(objects_at_elevator(state), 2):
         # Don't carry a chip and a generator of different elements
@@ -256,7 +260,9 @@ def doubles_at_elevator(state):
 
 
 def make_move(state, destination, cargos):
-    new_pairs = [list(pair) for pair in state[1]]
+    """Return a new state by moving the objects to destination."""
+    pairs = state[1]
+    new_pairs = [list(pair) for pair in pairs]
     for pair, obj_type in cargos:
         new_pairs[pair][obj_type] = destination
     new_pairs = tuple(sorted(tuple(pair) for pair in new_pairs))
@@ -264,10 +270,12 @@ def make_move(state, destination, cargos):
 
 
 def is_complete(state):
+    """Return boolean of whether all objects are on top floor."""
     return all(pair == (3, 3) for pair in state[1])
 
 
 def is_invalid(state):
+    """Return True if microchip is on same floor as an un-matched generator."""
     pairs = state[1]
     for chip, gen in pairs:
         if chip != gen:
