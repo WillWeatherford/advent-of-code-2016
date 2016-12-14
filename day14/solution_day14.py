@@ -64,7 +64,7 @@ def part1(lines):
     """Run solution for Part 1."""
     salt = next(lines)
     n = 64
-    result = find_nth_key_index(salt, 64)
+    result = find_nth_key_index(salt, n)
     print('{}th key found at the {} index.'.format(n, result))
 
 
@@ -72,11 +72,12 @@ def part2(lines):
     """Run solution for Part 2."""
     salt = next(lines)
     n = 64
-    result = find_nth_key_index(salt, 64, stretch=True)
+    result = find_nth_key_index(salt, n, stretch=2017)
     print('{}th key found at the {} index.'.format(n, result))
 
 
-def find_nth_key_index(salt, n, stretch=False):
+def find_nth_key_index(salt, n, stretch=1):
+    """Return the index at which the nth match is found."""
     found = 0
     hashes = deque(get_hashed_hex(salt, idx, stretch) for idx in range(1001))
 
@@ -97,18 +98,17 @@ def find_nth_key_index(salt, n, stretch=False):
     return idx
 
 
-def get_repeat(chars, num):
-    for idx, char in enumerate(chars):
-        if chars[idx:idx + num] == char * num:
-            return chars[idx:idx + num]
+def get_repeat(string, num):
+    """Return num repeated chars, if present in string, else empty string."""
+    for idx, char in enumerate(string):
+        if string[idx:idx + num] == char * num:
+            return string[idx:idx + num]
     return ''
 
 
 def get_hashed_hex(salt, idx, stretch):
-    """."""
-    bytes_val = '{}{}'.format(salt, idx).encode('ascii')
-    hashed = md5(bytes_val).hexdigest()
-    if stretch:
-        for _ in range(2016):
-            hashed = md5(hashed.encode('ascii')).hexdigest()
-    return hashed
+    """Return hexidecimal of hash of salt + idx, repeated stretch times."""
+    val = '{}{}'.format(salt, idx)
+    for _ in range(stretch):
+        val = md5(val.encode('ascii')).hexdigest()
+    return val
