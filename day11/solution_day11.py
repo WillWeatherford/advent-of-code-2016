@@ -3,9 +3,7 @@
 """
 from __future__ import unicode_literals, division
 from itertools import chain, combinations, product
-from copy import deepcopy
-from math import inf
-from collections import deque, namedtuple
+from collections import deque
 from operator import itemgetter
 import re
 
@@ -37,6 +35,13 @@ def part2(lines):
 
 
 def create_initial_state(lines):
+    """Return a state-tuple of the initial state from text input.
+
+    State is represented as a tuple: (e, ((c1, g2), (c4, g1), (c2, g4), ...))
+    Where e is the floor where the elevator is located, and each paired tuple
+    are the curent floors of the corresponding chip and generator for each
+    element.
+    """
     microchips = {}
     generators = {}
     for floor, line in enumerate(lines):
