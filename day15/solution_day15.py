@@ -35,7 +35,6 @@ With this new disc, and counting again starting from time=0 with the configurati
 """
 from __future__ import unicode_literals, division
 import re
-from itertools import count
 
 PART2_EXTRA_LINE = 'Disc #7 has 11 positions; at time=0, it is at position 0.'
 
@@ -59,22 +58,21 @@ def part2(lines):
 def simulate(lines):
     """Advance time, rotate discs until all slots are lined up correctly."""
     discs = {}
-    starts = {}
     for line in lines:
         match = re.match(PAT, line)
         idx, num_positions, start_pos = map(int, match.groups())
         discs[num_positions] = (idx + start_pos) % num_positions
-        starts[num_positions] = start_pos
 
+    # Find largest common denominator.
     largest = max(discs)
-    to_start = largest - discs[largest]
-    rotate_discs(discs, to_start)
+    time = largest - discs[largest]
+    # Advance to start with largest common denominator in solved position.
+    rotate_discs(discs, time)
 
-    time = to_start
     while True:
-
         if sum(discs.values()) == 0:
             return time
+        # Optimize by advancing by largest common denominator.
         rotate_discs(discs, largest)
         time += largest
 
