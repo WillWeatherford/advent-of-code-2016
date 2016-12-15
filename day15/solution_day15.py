@@ -59,17 +59,24 @@ def part2(lines):
 def simulate(lines):
     """Advance time, rotate discs until all slots are lined up correctly."""
     discs = {}
+    starts = {}
     for line in lines:
         match = re.match(PAT, line)
         idx, num_positions, start_pos = map(int, match.groups())
         discs[num_positions] = (idx + start_pos) % num_positions
+        starts[num_positions] = start_pos
 
-    rotations = 1
+    largest = max(discs)
+    to_start = largest - discs[largest]
+    rotate_discs(discs, to_start)
 
-    for time in count():
+    time = to_start
+    while True:
+
         if sum(discs.values()) == 0:
             return time
-        rotate_discs(discs, rotations)
+        rotate_discs(discs, largest)
+        time += largest
 
 
 def rotate_discs(discs, rotations):
