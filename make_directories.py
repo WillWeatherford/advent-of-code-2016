@@ -2,6 +2,7 @@
 from __future__ import unicode_literals, division
 from subprocess import call
 from run_aoc import FILENAMES
+import sys
 import os
 
 
@@ -9,9 +10,9 @@ HERE = os.path.abspath(os.path.dirname(__file__))
 RETURN_TO = 'master'
 
 
-def main(day_range):
+def main(start=1, end=26):
     """Run program creating git branches, directories and files for AoC."""
-    for day_num in day_range:
+    for day_num in range(start, end):
         day_name = 'day{}'.format(day_num)
         call(['git', 'checkout', '-b', day_name])
         path = os.path.join(HERE, day_name)
@@ -31,4 +32,4 @@ def main(day_range):
 
 
 if __name__ == '__main__':
-    main(range(5, 26))
+    main(*map(int, sys.argv[1:]))
