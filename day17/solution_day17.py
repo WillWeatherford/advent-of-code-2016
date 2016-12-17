@@ -51,34 +51,38 @@ from __future__ import unicode_literals, division
 from hashlib import md5
 from collections import deque
 
-OPENS = 'bcdef'
+OPENS = set('bcdef')
 
 DIRECTIONS = [
-    ('U', 0, -1),
-    ('D', 0, 1),
-    ('L', -1, 0),
-    ('R', 1, 0),
+    lambda x, y: ('U', x, y - 1),
+    lambda x, y: ('D', x, y + 1),
+    lambda x, y: ('L', x - 1, y),
+    lambda x, y: ('R', x + 1, y),
 ]
 
 SALT = 'pvhmgsws'
 START = (0, 0, '')
 END = (3, 3)
+VALID_COORDS = set(range(4))
 
 
 def part1(lines):
     """Run solution for Part 1."""
-    result = find_path(START, END)
+    salt = next(lines)
+    result = find_path(START, END, salt)
     print('Shortest possible path from start to vault:\n{}'.format(result))
 
 
 def part2(lines):
     """Run solution for Part 2."""
-    result = find_path(START, END, True)
+    salt = next(lines)
+    result = find_path(START, END, salt, True)
     print('Length of longest possible path from start to vault:\n{}'
           ''.format(len(result)))
 
 
-def find_path(start, exit, longest=False):
+def find_path(start, exit, salt, longest=False):
+    """Find shortest path from start to exit, or longest path if longest=True."""
     to_do = deque([start])
     longest_so_far = ''
 
@@ -92,23 +96,25 @@ def find_path(start, exit, longest=False):
             longest_so_far = path_so_far
             continue
 
-        for move, n_x, n_y in get_open_moves(x, y, path_so_far):
+        for move, n_x, n_y in get_open_moves(x, y, path_so_far, salt):
             to_do.appendleft((n_x, n_y, path_so_far + move))
 
     return longest_so_far
 
 
-def get_open_moves(x, y, path):
-    for move, door in zip(get_moves(x, y), get_door_status(path)):
-        if door and set(move[1:]).issubset(range(4)):
+def get_open_moves(x, y, path, salt):
+    for move, door in zip(get_moves(x, y), get_door_status(path, salt)):
+        if door and set(move[1:]).issubset(VALID_COORDS):
             yield move
 
 
 def get_moves(x, y):
-    for direction, x_mod, y_mod in DIRECTIONS:
-        yield direction, x + x_mod, y + y_mod
+    """Return generator of all coordindates directions from x, y."""
+    for direction in DIRECTIONS:
+        yield direction(x, y)
 
 
-def get_door_status(path):
-    hashed = md5((SALT + path).encode('ascii')).hexdigest()
+def get_door_status(path, salt):
+    """Return 4 boolean values representing door status in four directions."""
+    hashed = md5((salt + path).encode('ascii')).hexdigest()
     return map(lambda x: x in OPENS, hashed[:4])
