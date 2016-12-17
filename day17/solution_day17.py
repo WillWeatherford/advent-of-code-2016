@@ -67,33 +67,35 @@ END = (3, 3)
 
 def part1(lines):
     """Run solution for Part 1."""
-    paths = find_all_paths(START, END)
-    result = min(paths, key=len)
+    result = find_path(START, END)
     print('Shortest possible path from start to vault:\n{}'.format(result))
 
 
 def part2(lines):
     """Run solution for Part 2."""
-    paths = find_all_paths(START, END)
-    result = len(max(paths, key=len))
-    print('Longest possible path from start to vault:\n{}'.format(result))
+    result = find_path(START, END, True)
+    print('Length of longest possible path from start to vault:\n{}'
+          ''.format(len(result)))
 
 
-def find_all_paths(start, exit):
-    found_paths = set()
+def find_path(start, exit, longest=False):
     to_do = deque([start])
+    longest_so_far = ''
 
     while to_do:
         x, y, path_so_far = to_do.pop()
 
         if (x, y) == exit:
-            found_paths.add(path_so_far)
+            if not longest:
+                return path_so_far
+
+            longest_so_far = path_so_far
             continue
 
         for move, n_x, n_y in get_open_moves(x, y, path_so_far):
             to_do.appendleft((n_x, n_y, path_so_far + move))
 
-    return found_paths
+    return longest_so_far
 
 
 def get_open_moves(x, y, path):
