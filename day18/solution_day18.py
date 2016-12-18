@@ -10,6 +10,7 @@ TRAP_2 = (TRAP, TRAP)
 SAFE_2 = (SAFE, SAFE)
 ROWS = 400000
 
+
 def part1(lines):
     """Run solution for Part 1."""
     start_row = next(lines)
@@ -19,7 +20,6 @@ def part1(lines):
         prev_row = make_new_row(prev_row)
         total_safe += prev_row.count(SAFE)
     print(total_safe)
-
 
 
 def part2(lines):
