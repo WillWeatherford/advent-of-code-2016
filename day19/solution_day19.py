@@ -62,3 +62,17 @@ def part2v2(lines):
     print('{} is out'.format(elves.pop()))
     print('{} is out'.format(elves.pop()))
     print(elves[0])
+
+
+def part2v3(lines):
+    """Run solution for Part 2."""
+    elves = deque(range(1, START_ELVES + 1))
+    while len(elves) > 1:
+        # print('elf {} steals from elf {} out'.format(elves[0], elves[len(elves) // 2]))
+        elves.rotate(-(len(elves) // 2))
+        print('elf {} is out'.format(elves[0]))
+        elves.popleft()
+        # rot = -1
+
+        elves.rotate(len(elves) // 2 - 1)
+    print(elves[0])
