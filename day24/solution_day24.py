@@ -43,7 +43,7 @@ def find_shortest_path(lines):
     found_states = {start_state, }
     to_do = [start_move]
 
-    return_home = True
+    return_home = True  # True for part 2
 
     while True:
         total_distance, closest_target, num_unfound, _, pos, unfound = heappop(to_do)
@@ -53,16 +53,16 @@ def find_shortest_path(lines):
             num_unfound = len(unfound)
 
         if num_unfound == 0:
-            if return_home:
-                unfound = (start_pos, )
-                num_unfound = 1
-                return_home = False
-            else:
-                return total_distance
+            # if return_home:
+            #     unfound = (start_pos, )
+            #     num_unfound = 1
+            #     return_home = False
+            # else:
+            return total_distance
 
         for neighbor_pos in passable_neighbors(pos, grid):
 
-            neighbor_state = (neighbor_pos, tuple(sorted(unfound)))
+            neighbor_state = (neighbor_pos, unfound)
             if neighbor_state in found_states:
                 continue
 
