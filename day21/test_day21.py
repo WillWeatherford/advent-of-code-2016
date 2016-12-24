@@ -43,3 +43,9 @@ def test_move_position():
     from .solution_day21 import move_position
     assert move_position('bcdea', 1, 4) == 'bdeac'
     assert move_position('bdeac', 3, 0) == 'abdec'
+
+
+def test_move_position_reverse():
+    from .solution_day21 import move_position
+    assert move_position('bdeac', 1, 4, reverse=True) == 'bcdea'
+    assert move_position('abdec', 3, 0, reverse=True) == 'bdeac'
