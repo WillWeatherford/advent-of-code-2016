@@ -13,9 +13,9 @@ def part1(lines):
 
 def part2(lines):
     """Run solution for Part 2."""
-    # table = {'a': 0, 'b': 0, 'c': 1, 'd': 0}
-    # result = process_instructions(lines, table)
-    # print('Value of register "a" after execution: {}'.format(result))
+    table = {'a': 12, 'b': 0, 'c': 1, 'd': 0}
+    result = process_instructions(lines, table)
+    print('Value of register "a" after execution: {}'.format(result))
 
 
 def process_instructions(lines, table):
@@ -82,6 +82,6 @@ def jnz(table, val, jump_distance):
     if zero_val == 0:
         return 1
     try:
-        return int(jump_distance)
-    except ValueError:
-        return table[jump_distance]
+        return table[jump_distance]  # Check if the given distance is a register.
+    except KeyError:
+        return int(jump_distance)  # Otherwise, it's just an integer.
