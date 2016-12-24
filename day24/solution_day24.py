@@ -10,11 +10,17 @@ WALL = '#'
 
 def part1(lines):
     """Run solution for Part 1."""
-    num_moves = find_shortest_path(lines)
-    print(num_moves)
+    num_moves = find_shortest_path(lines, False)
+    print('It takes at least {} moves to visit every position.'.format(num_moves))
 
 
-def find_shortest_path(lines):
+def part2(lines):
+    """Run solution for Part 2."""
+    num_moves = find_shortest_path(lines, True)
+    print('It takes at least {} moves to visit every position, then return home.'.format(num_moves))
+
+
+def find_shortest_path(lines, return_home):
     unique = count()
     grid = []
     goals = set()
@@ -31,12 +37,10 @@ def find_shortest_path(lines):
 
     # (total_distance, closest_target, num_unfound, _, pos, un_found)
     goals = tuple(sorted(goals))
-    return_home = False  # True for part 2
 
     start_move = (
         0,
         return_home,
-        closest_target_distance(start_pos, goals),
         len(goals),
         next(unique),
         start_pos,
@@ -47,7 +51,7 @@ def find_shortest_path(lines):
     to_do = [start_move]
 
     while True:
-        total_distance, return_home, closest_target, num_unfound, _, pos, unfound = heappop(to_do)
+        total_distance, return_home, num_unfound, _, pos, unfound = heappop(to_do)
 
         if pos in unfound:
             unfound = tuple(g_pos for g_pos in unfound if g_pos != pos)
@@ -71,7 +75,6 @@ def find_shortest_path(lines):
             move = (
                 total_distance + 1,
                 return_home,
-                closest_target_distance(neighbor_pos, unfound),
                 num_unfound,
                 next(unique),
                 neighbor_pos,
@@ -113,5 +116,4 @@ def closest_target_distance(pos, unfound):
                for goal in unfound)
 
 
-def part2(lines):
-    """Run solution for Part 2."""
+
