@@ -32,6 +32,17 @@ def test_rotate_based():
     from .solution_day21 import rotate_based
     assert rotate_based('abdec', 'b') == 'ecabd'
     assert rotate_based('ecabd', 'd') == 'decab'
+    assert rotate_based('0123456789', '4') == '4567890123'
+
+
+def test_rotate_based_reverse():
+    from .solution_day21 import rotate_based
+    assert rotate_based('bca', 'b', reverse=True) == 'abc'
+    assert rotate_based('abc', 'c', reverse=True) == 'abc'
+    assert rotate_based('cab', 'a', reverse=True) == 'abc'
+    assert rotate_based('ecabd', 'b', reverse=True) == 'abdec'
+    assert rotate_based('4567890123', '4', reverse=True) == '0123456789'
+    assert rotate_based('decab', 'd', reverse=True) == 'ecabd'
 
 
 def test_reverse_positions():

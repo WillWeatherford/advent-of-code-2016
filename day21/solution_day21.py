@@ -66,9 +66,19 @@ def rotate_right(string, steps, reverse=False):
 
 
 def rotate_based(string, letter, reverse=False):
+    if reverse:
+        return rotate_base_reverse(string, letter)
     steps = string.find(letter)
-    rotate_func = rotate_left if reverse else rotate_right
-    return rotate_func(string, 1 + steps + (steps >= 4))
+    return rotate_right(string, 1 + steps + (steps >= 4))
+
+
+def rotate_base_reverse(string, letter):
+    for idx in range(len(string) - 1, -1, -1):
+        possible = rotate_left(string, 1 + idx + (idx >= 4))
+        if possible[idx] == letter:
+            return possible
+    else:
+        raise AssertionError('No reverse rotation based on letter found.')
 
 
 def reverse_positions(string, start, end, reverse=False):
