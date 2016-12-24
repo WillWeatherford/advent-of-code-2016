@@ -108,12 +108,3 @@ def find_neighbors(pos):
     yield y + 1, x
     # right
     yield y, x + 1
-
-
-def closest_target_distance(pos, unfound):
-    """Return the shortest distance to any unfound goal location from current pos."""
-    return min(abs(goal[0] - pos[0]) + abs(goal[1] - pos[1])
-               for goal in unfound)
-
-
-
