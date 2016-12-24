@@ -49,7 +49,7 @@ def find_shortest_path(lines):
         total_distance, closest_target, num_unfound, _, pos, unfound = heappop(to_do)
 
         if pos in unfound:
-            unfound = tuple(sorted(g_pos for g_pos in unfound if g_pos != pos))
+            unfound = tuple(g_pos for g_pos in unfound if g_pos != pos)
             num_unfound = len(unfound)
 
         if num_unfound == 0:
