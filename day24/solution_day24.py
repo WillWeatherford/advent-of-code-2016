@@ -29,10 +29,9 @@ def find_shortest_path(lines):
             row.append(char)
         grid.append(row)
 
-    # grid = [list(line) for line in lines]
-
     # (total_distance, closest_target, num_unfound, _, pos, un_found)
-    start = (
+    goals = tuple(sorted(goals))
+    start_move = (
         0,
         closest_target_distance(start_pos, goals),
         len(goals),
@@ -40,19 +39,26 @@ def find_shortest_path(lines):
         start_pos,
         goals,
     )
-    to_do = [start]
+    start_state = (start_pos, goals)
+    found_states = set(start_state)
+    to_do = [start_move]
     while True:
         total_distance, closest_target, num_unfound, _, pos, unfound = heappop(to_do)
 
-        # update unfound and num_unfound
         if pos in unfound:
-            unfound = unfound - {pos}
+            unfound = tuple(sorted(g_pos for g_pos in unfound if g_pos != pos))
             num_unfound = len(unfound)
 
         if num_unfound == 0:
             return total_distance
 
         for neighbor_pos in passable_neighbors(pos, grid):
+
+            neighbor_state = (neighbor_pos, tuple(sorted(unfound)))
+            if neighbor_state in found_states:
+                continue
+
+            found_states.add(neighbor_state)
             move = (
                 total_distance + 1,
                 closest_target_distance(neighbor_pos, unfound),
@@ -65,6 +71,7 @@ def find_shortest_path(lines):
 
 
 def passable_neighbors(pos, grid):
+    """Return generator of only valid neighbor positions."""
     for y, x in find_neighbors(pos):
         try:
             val = grid[y][x]
@@ -76,6 +83,7 @@ def passable_neighbors(pos, grid):
 
 
 def find_neighbors(pos):
+    """Return generator of all neighbor positions."""
     y, x = pos
     # up
     if y > 0:
@@ -87,8 +95,6 @@ def find_neighbors(pos):
     yield y + 1, x
     # right
     yield y, x + 1
-
-
 
 
 def closest_target_distance(pos, unfound):
