@@ -21,15 +21,16 @@ def part2(lines):
 
 def execute(line, string):
     """Return a partialed function with arguments from line."""
-    for pat, func in INSTRUCTIONS.items():
-        match = re.match(pat, line)
-        if match is not None:
-            try:
-                return func(string, *map(int, match.groups()))
-            except ValueError:
-                return func(string, *match.groups())
+    *func_words, _ = line.split(maxsplit=2)
 
-    raise AssertionError('No match found in line: {}.'.format(line))
+    func_name = '_'.join(func_words)
+    func = globals()[func_name]
+
+    args = tuple(map(int, re.findall(r'\d+', line)))
+    if not args:
+        letters = re.findall(r'letter\s\w', line)
+        args = [letter.split()[1] for letter in letters]
+    return func(string, *args)
 
 
 def swap_position(string, idx_1, idx_2):
@@ -45,44 +46,26 @@ def swap_letter(string, letter_1, letter_2):
 
 
 def rotate_left(string, steps):
+    steps %= len(string)
     return string[steps:] + string[:steps]
 
 
 def rotate_right(string, steps):
+    steps %= len(string)
     return string[-steps:] + string[:-steps]
 
 
-def rotate_based_on_index(string, letter):
+def rotate_based(string, letter):
     steps = string.find(letter)
-    if steps >= 4:
-        steps += 1
-    return rotate_right(string, steps + 1)
+    return rotate_right(string, 1 + steps + (steps >= 4))
 
 
-def reverse_slice(string, start, end):
-    return string[:start] + string[end:start - 1: -1] + string[end + 1:]
+def reverse_positions(string, start, end):
+    reverse = ''.join(reversed(string[start:end + 1]))
+    return string[:start] + reverse + string[end + 1:]
 
 
-def move(string, from_idx, to_idx):
+def move_position(string, from_idx, to_idx):
     letter = string[from_idx]
     string = string[:from_idx] + string[from_idx + 1:]
     return string[:to_idx] + letter + string[to_idx:]
-
-
-SWAP_POS = r'^swap\sposition\s(\d+)\swith\sposition\s(\d+)$'
-SWAP_LETTER = r'^swap\sletter\s(\w)\swith\sletter\s(\w)$'
-ROTATE_LEFT = r'^rotate left\s(\d+)\sstep'
-ROTATE_RIGHT = r'^rotate right\s(\d+)\sstep'
-ROTATE_ON_IDX = r'^rotate based on position of letter\s(\w)$'
-REVERSE_SLICE = r'^reverse positions\s(\d+)\sthrough\s(\d+)$'
-MOVE = r'^move position\s(\d+)\sto position\s(\d+)$'
-
-INSTRUCTIONS = {
-    SWAP_POS: swap_position,
-    SWAP_LETTER: swap_letter,
-    ROTATE_LEFT: rotate_left,
-    ROTATE_RIGHT: rotate_right,
-    ROTATE_ON_IDX: rotate_based_on_index,
-    REVERSE_SLICE: reverse_slice,
-    MOVE: move,
-}
