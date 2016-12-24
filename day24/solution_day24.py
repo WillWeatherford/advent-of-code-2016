@@ -40,8 +40,11 @@ def find_shortest_path(lines):
         goals,
     )
     start_state = (start_pos, goals)
-    found_states = set(start_state)
+    found_states = {start_state, }
     to_do = [start_move]
+
+    return_home = True
+
     while True:
         total_distance, closest_target, num_unfound, _, pos, unfound = heappop(to_do)
 
@@ -50,7 +53,12 @@ def find_shortest_path(lines):
             num_unfound = len(unfound)
 
         if num_unfound == 0:
-            return total_distance
+            if return_home:
+                unfound = (start_pos, )
+                num_unfound = 1
+                return_home = False
+            else:
+                return total_distance
 
         for neighbor_pos in passable_neighbors(pos, grid):
 
