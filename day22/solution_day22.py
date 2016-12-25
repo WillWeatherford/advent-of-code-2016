@@ -37,10 +37,11 @@ def is_viable_combo(nodes):
     return node1['used'] <= node2['avail']
 
 
-WIDTH = 38
-HEIGHT = 28
+WIDTH = 3
+HEIGHT = 3
+TOO_LARGE = 15
 USABLE = '.'
-UNUSABLE = '.'
+UNUSABLE = '#'
 
 
 def part2(lines):
@@ -55,7 +56,7 @@ def find_shortest_path(lines):
     for line in lines:
         line_dict = line_to_dict(line)
         x, y = line_dict['pos']
-        if line_dict['size'] < 100:
+        if line_dict['size'] < TOO_LARGE:
             grid[y][x] = USABLE
         else:
             grid[y][x] = UNUSABLE
@@ -107,9 +108,9 @@ def distance_between(pos1, pos2):
 def neighbor_states(grid, empty_pos, data_pos):
     for neighbor_pos in usable_neighbors(empty_pos, grid):
         if neighbor_pos == data_pos:
-            yield neighbor_pos, empty_pos
+            yield (neighbor_pos, empty_pos)
         else:
-            yield neighbor_pos, data_pos
+            yield (neighbor_pos, data_pos)
 
 
 def usable_neighbors(pos, grid):
@@ -120,7 +121,7 @@ def usable_neighbors(pos, grid):
         except IndexError:
             continue
         else:
-            if val != UNUSABLE:
+            if val == USABLE:
                 yield (y, x)
 
 
