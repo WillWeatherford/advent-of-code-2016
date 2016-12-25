@@ -28,7 +28,7 @@ def steal_presents(num_elves, steal_across):
     if steal_across:
         elves.rotate(-((len(elves) - 1) >> 1))
     while len(elves) > 1:
-        if not steal_across or (len(elves) % 2 == 0):
+        if not steal_across or len(elves) % 2 == 0:
             elves.rotate(-1)
         elves.popleft()
     return elves[0]
