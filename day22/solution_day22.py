@@ -37,9 +37,9 @@ def is_viable_combo(nodes):
     return node1['used'] <= node2['avail']
 
 
-WIDTH = 3
-HEIGHT = 3
-TOO_LARGE = 15
+WIDTH = 38
+HEIGHT = 28
+TOO_LARGE = 100
 USABLE = '.'
 UNUSABLE = '#'
 
