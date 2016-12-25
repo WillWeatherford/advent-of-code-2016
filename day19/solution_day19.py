@@ -3,7 +3,7 @@
 """
 from __future__ import unicode_literals, division
 from collections import OrderedDict, deque
-
+from itertools import chain
 
 START_ELVES = 5
 
@@ -38,41 +38,55 @@ START_ELVES = 3001330
 
 def part2(lines):
     """Run solution for Part 2."""
-    elves = deque(range(1, START_ELVES + 1))
+    func = alternate
+    print(func(START_ELVES))
+
+
+# def divide_and_join(num_elves):
+#     elves = deque(range(1, num_elves + 1))
+#     while len(elves) > 1:
+#         half = (len(elves) - 1) >> 1
+#         elves = deque(chain(elves[:half], elves[half + 1:]))
+#     return elves[0]
+
+
+def alternate(num_elves):
+    elves = deque(range(1, num_elves + 1))
+    elves.rotate(-((len(elves) - 1) >> 1))
     while len(elves) > 1:
-        # print('elf {} steals from elf {} out'.format(elves[0], elves[len(elves) // 2]))
+        if len(elves) % 2 == 0:
+            elves.rotate(-1)
+        elves.popleft()
+    return elves[0]
+
+
+def rotate_remove(num_elves):
+    elves = deque(range(1, num_elves + 1))
+    while len(elves) > 1:
+        print('elf {} steals from elf {} out'.format(elves[0], elves[len(elves) // 2]))
         elves.remove(elves[len(elves) // 2])
-        # rot = -1
         elves.rotate(-1)
-        # print('{} elves left'.format(len(elves)))
-    print(elves[0])
+    return elves[0]
 
 
-def part2v2(lines):
+def rotate_pop(num_elves):
     """Run solution for Part 2."""
-    elves = deque(range(1, START_ELVES + 1))
-    elves.rotate(-(len(elves) // 2))
-    while len(elves) > 3:
-        # stealer = elves[0]
-        # rot = -1
-        # print('elf {} is out'.format(elves[0]))
+    elves = deque(range(1, num_elves + 1))
+    elves.rotate(-(len(elves) >> 1))
+    while len(elves) > 1:
+        print(elves[0])
         elves.popleft()
         elves.rotate(-1)
-        # print('{} elves left'.format(len(elves)))
-    print('{} is out'.format(elves.pop()))
-    print('{} is out'.format(elves.pop()))
-    print(elves[0])
+    return elves[0]
 
 
-def part2v3(lines):
+def rotate_pop_rotate(num_elves):
     """Run solution for Part 2."""
-    elves = deque(range(1, START_ELVES + 1))
+    elves = deque(range(1, num_elves + 1))
     while len(elves) > 1:
         # print('elf {} steals from elf {} out'.format(elves[0], elves[len(elves) // 2]))
         elves.rotate(-(len(elves) // 2))
         print('elf {} is out'.format(elves[0]))
         elves.popleft()
-        # rot = -1
-
-        elves.rotate(len(elves) // 2 - 1)
-    print(elves[0])
+        elves.rotate((len(elves) // 2) - 1)
+    return elves[0]
