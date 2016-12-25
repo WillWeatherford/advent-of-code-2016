@@ -28,12 +28,6 @@ def line_to_dict(line):
     }
 
 
-def line_to_tup(line):
-    name, *rest = line.split()
-    pos = tuple(map(int, re.match(r'.*-x(\d+)-y(\d+)', name).groups()))
-    return pos + tuple(map(lambda x: int(x[:-1], rest)))
-
-
 def is_viable_combo(nodes):
     node1, node2 = nodes
     if node1['used'] <= 0:
@@ -45,72 +39,80 @@ def is_viable_combo(nodes):
 
 WIDTH = 38
 HEIGHT = 28
+USABLE = '.'
+UNUSABLE = '.'
 
 
 def part2(lines):
     """Run solution for Part 2."""
     _, _ = next(lines), next(lines)
     fewest_moves = find_shortest_path(lines)
+    print('{} moves to get data to goal.'.format(fewest_moves))
 
 
 def find_shortest_path(lines):
     grid = [[None, ] * WIDTH for _ in range(HEIGHT)]
     for line in lines:
-        line_tup = line_to_tup(line)
-        x, y = line_tup[:2]
-        grid[y][x] = line_tup[2:]
-        if line_tup[2] == 0:
+        line_dict = line_to_dict(line)
+        x, y = line_dict['pos']
+        if line_dict['size'] < 100:
+            grid[y][x] = USABLE
+        else:
+            grid[y][x] = UNUSABLE
+        if line_dict['used'] == 0:
             empty_pos = (y, x)
 
     unique = count()
     data_pos = (0, WIDTH - 1)
     goal_pos = (0, 0)
 
+    start_state = (empty_pos, data_pos)
     start_move = (
         0,
-        # heuristic?
+        distance_between(data_pos, goal_pos),
         next(unique),
-        data_pos,
-        goal_pos,
+        start_state
     )
-    start_state = str(grid)
     found_states = {start_state, }
-    to_do = [start_move]
+    to_do = [start_move, ]
 
-    while True:
-        total_distance, num_unfound, return_home, _, pos, unfound = heappop(to_do)
+    while to_do:
+        total_distance, _, _, current_state = heappop(to_do)
 
-        if pos in unfound:
-            unfound = tuple(g_pos for g_pos in unfound if g_pos != pos)
-            num_unfound = len(unfound)
+        empty_pos, data_pos = current_state
 
-        if num_unfound == 0:
-            if return_home:
-                unfound = (start_pos, )
-                num_unfound = 1
-                return_home = False
-            else:
-                return total_distance
+        if data_pos == goal_pos:
+            return total_distance
 
-        for neighbor_pos in passable_neighbors(pos, grid):
+        for neighbor_state in neighbor_states(grid, *current_state):
 
-            neighbor_state = (neighbor_pos, unfound)
             if neighbor_state in found_states:
                 continue
 
             found_states.add(neighbor_state)
             move = (
                 total_distance + 1,
-                num_unfound,
-                return_home,
+                distance_between(data_pos, goal_pos),
                 next(unique),
-                neighbor_pos,
-                unfound,
+                neighbor_state,
             )
             heappush(to_do, move)
 
 
-def passable_neighbors(pos, grid):
+def distance_between(pos1, pos2):
+    """Return total distance to goal_pos from the current data position."""
+    return sum(abs(xy1 - xy2) for xy1, xy2 in zip(pos1, pos2))
+
+
+def neighbor_states(grid, empty_pos, data_pos):
+    for neighbor_pos in usable_neighbors(empty_pos, grid):
+        if neighbor_pos == data_pos:
+            yield neighbor_pos, empty_pos
+        else:
+            yield neighbor_pos, data_pos
+
+
+def usable_neighbors(pos, grid):
     """Return generator of only valid neighbor positions."""
     for y, x in find_neighbors(pos):
         try:
@@ -118,7 +120,7 @@ def passable_neighbors(pos, grid):
         except IndexError:
             continue
         else:
-            if val != WALL:
+            if val != UNUSABLE:
                 yield (y, x)
 
 
