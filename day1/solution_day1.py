@@ -37,9 +37,9 @@ TURNS = {
 
 def parse_input(lines):
     """Parse a long input string of instructions."""
-    for line in lines:
-        for instruction in line.split(', '):
-            yield instruction[0], int(instruction[1:])
+    line = next(lines)
+    for instruction in line.split(', '):
+        yield instruction[0], int(instruction[1:])
 
 
 def distance_to_final(instructions):
